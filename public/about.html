@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Task Manager</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✅</text></svg>">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                ✅ Task Manager
+            </a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tasks">Tasks</a></li>
+                <li><a href="/about" class="active">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <div class="about-content">
+            <h1>About This Project</h1>
+            
+            <section class="about-section">
+                <h2>📖 Overview</h2>
+                <p>
+                    Task Manager is a multi-page web application developed as part of CPS 630 - Assignment 1. 
+                    The application demonstrates the fundamentals of client-server architecture using Node.js 
+                    and Express.js, implementing a REST API that allows users to manage a list of tasks.
+                </p>
+                <p>
+                    Users can create, view, and delete tasks through an intuitive web interface. The application 
+                    showcases proper HTTP methods (GET, POST, DELETE), status codes, and JSON data handling 
+                    without requiring a database - all data is persisted in a JSON file on the server.
+                </p>
+            </section>
+
+            <section class="about-section">
+                <h2>🛠️ Technology Stack</h2>
+                <p>This project was built using the following technologies:</p>
+                <div class="tech-stack">
+                    <span class="tech-badge">Node.js</span>
+                    <span class="tech-badge">Express.js</span>
+                    <span class="tech-badge">HTML5</span>
+                    <span class="tech-badge">CSS3</span>
+                    <span class="tech-badge">JavaScript (ES6+)</span>
+                    <span class="tech-badge">REST API</span>
+                    <span class="tech-badge">JSON</span>
+                </div>
+            </section>
+
+            <section class="about-section">
+                <h2>🔌 API Endpoints</h2>
+                <p>The application exposes the following REST API endpoints:</p>
+                <ul>
+                    <li><strong>GET /api/items</strong> - Retrieve all tasks</li>
+                    <li><strong>GET /api/items/:id</strong> - Retrieve a single task by ID</li>
+                    <li><strong>POST /api/items</strong> - Create a new task</li>
+                    <li><strong>DELETE /api/items/:id</strong> - Delete a task by ID</li>
+                </ul>
+            </section>
+
+            <section class="about-section">
+                <h2>📄 Pages</h2>
+                <p>The application consists of three main pages:</p>
+                <ul>
+                    <li><strong>Home (/)</strong> - Landing page with overview and features</li>
+                    <li><strong>Tasks (/tasks)</strong> - Main interface for managing tasks</li>
+                    <li><strong>About (/about)</strong> - Project information and documentation</li>
+                </ul>
+            </section>
+
+            <section class="about-section">
+                <h2>🚀 Future Extensions</h2>
+                <p>This application was designed to be modular and extensible. Potential future improvements include:</p>
+                <ul>
+                    <li>Adding a database (MongoDB or MySQL) for proper data persistence</li>
+                    <li>Implementing user authentication and authorization</li>
+                    <li>Converting to a React-based frontend for better state management</li>
+                    <li>Adding task editing and completion status</li>
+                    <li>Implementing task categories and filtering</li>
+                    <li>Adding due dates and reminder notifications</li>
+                    <li>Creating a mobile-responsive progressive web app (PWA)</li>
+                </ul>
+            </section>
+
+            <section class="about-section">
+                <h2>👥 Team</h2>
+                <p>
+                    This project was developed by <strong>Group 37</strong> for CPS 630 - Human-Computer Interaction 
+                    at Toronto Metropolitan University (formerly Ryerson University).
+                </p>
+                <p>
+                    Course Instructor: Dr. Anthony Scavarelli
+                </p>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>CPS 630 - Assignment 1 | Group 37 | © 2026</p>
+        <p>Built with <a href="https://expressjs.com/" target="_blank">Express.js</a></p>
+    </footer>
+</body>
+</html>
