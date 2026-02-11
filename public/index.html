@@ -1,85 +1,48 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Manager | CPS 630 Assignment 1</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✅</text></svg>">
-</head>
-<body>
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <a href="/" class="nav-brand">
-                ✅ Task Manager
-            </a>
-            <ul class="nav-links">
-                <li><a href="/" class="active">Home</a></li>
-                <li><a href="/tasks">Tasks</a></li>
-                <li><a href="/about">About</a></li>
-            </ul>
-        </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShopperPet — Smart Grocery List</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="/" class="nav-brand">🛒 ShopperPet</a>
+      <div class="nav-links">
+        <a href="/" class="active">Home</a>
+        <a href="/list">List</a>
+        <a href="/add">Add</a>
+        <a href="/analytics">Analytics</a>
+      </div>
     </nav>
 
-    <!-- Main Content -->
-    <main>
-        <!-- Hero Section -->
-        <section class="hero">
-            <h1>📋 Manage Your Tasks Efficiently</h1>
-            <p>A simple and intuitive task management application built with Node.js and Express. Add, view, and delete tasks with ease.</p>
-            <a href="/tasks" class="hero-btn">Get Started →</a>
-        </section>
+    <main class="container">
+      <section class="hero">
+        <h1>🛒 ShopperPet</h1>
+        <p class="subtitle">Your simple, smart grocery list manager.</p>
+        <div class="btn-group">
+          <a href="/list" class="btn btn-primary">📋 View List</a>
+          <a href="/add" class="btn btn-primary">➕ Add New</a>
+          <a href="/analytics" class="btn btn-secondary">📊 Analytics</a>
+        </div>
+      </section>
 
-        <!-- Features Section -->
-        <section>
-            <h2 style="text-align: center; margin-bottom: 0.5rem;">Key Features</h2>
-            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">Everything you need to stay organized</p>
-            
-            <div class="features-grid">
-                <div class="card">
-                    <div class="card-icon">📝</div>
-                    <h3>Create Tasks</h3>
-                    <p>Easily add new tasks with titles, descriptions, and priority levels. Keep track of what needs to be done.</p>
-                </div>
-                
-                <div class="card">
-                    <div class="card-icon">📊</div>
-                    <h3>View All Tasks</h3>
-                    <p>See all your tasks in one place. Quickly identify high-priority items that need immediate attention.</p>
-                </div>
-                
-                <div class="card">
-                    <div class="card-icon">🗑️</div>
-                    <h3>Delete Tasks</h3>
-                    <p>Remove completed or unwanted tasks with a single click. Keep your task list clean and focused.</p>
-                </div>
-                
-                <div class="card">
-                    <div class="card-icon">⚡</div>
-                    <h3>Fast & Responsive</h3>
-                    <p>Built with modern web technologies for a smooth experience on any device. No page reloads needed.</p>
-                </div>
-                
-                <div class="card">
-                    <div class="card-icon">🔒</div>
-                    <h3>Persistent Storage</h3>
-                    <p>Your tasks are saved on the server. Come back anytime and pick up where you left off.</p>
-                </div>
-                
-                <div class="card">
-                    <div class="card-icon">🎨</div>
-                    <h3>Clean Interface</h3>
-                    <p>Modern, minimalist design that helps you focus on what matters most - your tasks.</p>
-                </div>
-            </div>
-        </section>
+      <section>
+        <h2>Recently Added</h2>
+        <div id="recent-items" class="grocery-list">
+          <div class="empty-state">
+            <div class="empty-icon">⏳</div>
+            <p>Loading...</p>
+          </div>
+        </div>
+      </section>
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <p>CPS 630 - Assignment 1 | Group 37 | © 2026</p>
-        <p>Built with <a href="https://expressjs.com/" target="_blank">Express.js</a></p>
+    <footer class="footer">
+      <p>ShopperPet &copy; 2026 — CPS 630 A1 Group 37</p>
     </footer>
-</body>
+
+    <script src="/js/home.js"></script>
+  </body>
 </html>

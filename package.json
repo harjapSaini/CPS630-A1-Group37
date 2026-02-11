@@ -1,21 +1,12 @@
 {
-  "name": "cps630-a1-group37",
+  "name": "shopperpet",
   "version": "1.0.0",
-  "description": "Multi-page Web Application - Task Manager",
+  "description": "A minimalistic multi-page grocery list web application",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node server.js"
   },
-  "keywords": [
-    "express",
-    "nodejs",
-    "rest-api",
-    "task-manager"
-  ],
-  "author": "Group 37",
-  "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.21.2"
   }
 }

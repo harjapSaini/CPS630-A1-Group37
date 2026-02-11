@@ -1,242 +1,197 @@
-/**
- * CPS 630 - Assignment 1: Multi-page Web Application
- * Group 37 - Task Manager Server
- * 
- * This Express server provides:
- * - Static file serving for HTML, CSS, and JS
- * - REST API endpoints for task management (GET, POST, DELETE)
- * - Multiple HTML page routes
- */
-
-const express = require('express');
-const path = require('path');
-const fs = require('fs');
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 const PORT = 3000;
+const DATA_FILE = path.join(__dirname, "grocery-data.json");
 
-// Path to our JSON data file
-const DATA_FILE = path.join(__dirname, 'data', 'items.json');
-
-// =============================================================================
-// MIDDLEWARE
-// =============================================================================
-
-// Parse JSON request bodies
+// ── Middleware ──────────────────────────────────────────────
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
-// Parse URL-encoded request bodies (for form submissions)
-app.use(express.urlencoded({ extended: true }));
-
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// =============================================================================
-// HELPER FUNCTIONS
-// =============================================================================
-
-/**
- * Read items from the JSON file
- * @returns {Array} Array of task items
- */
-function readItems() {
-    try {
-        const data = fs.readFileSync(DATA_FILE, 'utf8');
-        return JSON.parse(data);
-    } catch (error) {
-        console.error('Error reading items file:', error);
-        return [];
-    }
+// ── Data Helpers ───────────────────────────────────────────
+function readData() {
+  const raw = fs.readFileSync(DATA_FILE, "utf-8");
+  return JSON.parse(raw);
 }
 
-/**
- * Write items to the JSON file
- * @param {Array} items - Array of task items to save
- */
-function writeItems(items) {
-    try {
-        fs.writeFileSync(DATA_FILE, JSON.stringify(items, null, 2), 'utf8');
-    } catch (error) {
-        console.error('Error writing items file:', error);
-    }
+function writeData(data) {
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
 }
 
-/**
- * Generate a unique ID for new items
- * @returns {number} New unique ID
- */
-function generateId() {
-    const items = readItems();
-    if (items.length === 0) return 1;
-    return Math.max(...items.map(item => item.id)) + 1;
+function nextId(data) {
+  if (data.length === 0) return 1;
+  return Math.max(...data.map((item) => item.id)) + 1;
 }
 
-// =============================================================================
-// HTML PAGE ROUTES
-// =============================================================================
+// ── REST API ───────────────────────────────────────────────
 
-// Home page
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// GET all items
+app.get("/api/list", (req, res) => {
+  try {
+    const data = readData();
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to read data" });
+  }
 });
 
-// Tasks/Items management page
-app.get('/tasks', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'tasks.html'));
-});
-
-// About page
-app.get('/about', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'about.html'));
-});
-
-// =============================================================================
-// REST API ENDPOINTS
-// =============================================================================
-
-/**
- * GET /api/items
- * Retrieve all items from the list
- * Status Codes: 200 (Success)
- */
-app.get('/api/items', (req, res) => {
-    const items = readItems();
-    res.status(200).json({
-        success: true,
-        count: items.length,
-        data: items
-    });
-});
-
-/**
- * GET /api/items/:id
- * Retrieve a single item by ID
- * Status Codes: 200 (Success), 404 (Not Found)
- */
-app.get('/api/items/:id', (req, res) => {
-    const items = readItems();
-    const id = parseInt(req.params.id);
-    const item = items.find(i => i.id === id);
-
+// GET single item by id
+app.get("/api/list/:id", (req, res) => {
+  try {
+    const data = readData();
+    const item = data.find((i) => i.id === parseInt(req.params.id));
     if (!item) {
-        return res.status(404).json({
-            success: false,
-            message: `Item with ID ${id} not found`
-        });
+      return res.status(404).json({ error: "Item not found" });
     }
-
-    res.status(200).json({
-        success: true,
-        data: item
-    });
+    res.status(200).json(item);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to read data" });
+  }
 });
 
-/**
- * POST /api/items
- * Add a new item to the list
- * Status Codes: 201 (Created), 400 (Bad Request)
- */
-app.post('/api/items', (req, res) => {
-    const { title, description, priority } = req.body;
+// POST new item
+app.post("/api/list", (req, res) => {
+  try {
+    const { item, category, quantity, price, store, addedBy, priority, notes } =
+      req.body;
 
     // Validate required fields
-    if (!title || title.trim() === '') {
-        return res.status(400).json({
-            success: false,
-            message: 'Title is required'
-        });
+    if (!item || !category || !quantity) {
+      return res
+        .status(400)
+        .json({ error: "Missing required fields: item, category, quantity" });
     }
 
-    const items = readItems();
-    
-    // Create new item
+    const data = readData();
     const newItem = {
-        id: generateId(),
-        title: title.trim(),
-        description: description ? description.trim() : '',
-        priority: priority || 'medium',
-        completed: false,
-        createdAt: new Date().toISOString()
+      id: nextId(data),
+      item: item.trim(),
+      category,
+      quantity: Number(quantity),
+      price: Number(price) || 0,
+      store: (store || "").trim(),
+      addedBy: (addedBy || "Anonymous").trim(),
+      priority: priority || "Medium",
+      status: "Pending",
+      notes: (notes || "").trim(),
+      dateAdded: new Date().toISOString().split("T")[0],
     };
 
-    items.push(newItem);
-    writeItems(items);
-
-    res.status(201).json({
-        success: true,
-        message: 'Item created successfully',
-        data: newItem
-    });
+    data.push(newItem);
+    writeData(data);
+    res.status(201).json(newItem);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to save item" });
+  }
 });
 
-/**
- * DELETE /api/items/:id
- * Delete an item from the list
- * Status Codes: 200 (Success), 404 (Not Found)
- */
-app.delete('/api/items/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    const items = readItems();
-    const itemIndex = items.findIndex(i => i.id === id);
-
-    if (itemIndex === -1) {
-        return res.status(404).json({
-            success: false,
-            message: `Item with ID ${id} not found`
-        });
+// PATCH update item (e.g. status toggle)
+app.patch("/api/list/:id", (req, res) => {
+  try {
+    const data = readData();
+    const index = data.findIndex((i) => i.id === parseInt(req.params.id));
+    if (index === -1) {
+      return res.status(404).json({ error: "Item not found" });
     }
 
-    const deletedItem = items.splice(itemIndex, 1)[0];
-    writeItems(items);
-
-    res.status(200).json({
-        success: true,
-        message: 'Item deleted successfully',
-        data: deletedItem
+    // Merge only the provided fields
+    const allowedFields = [
+      "status",
+      "priority",
+      "notes",
+      "quantity",
+      "price",
+      "store",
+    ];
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        data[index][field] = req.body[field];
+      }
     });
+
+    writeData(data);
+    res.status(200).json(data[index]);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update item" });
+  }
 });
 
-// =============================================================================
-// ERROR HANDLING
-// =============================================================================
+// DELETE item by id
+app.delete("/api/list/:id", (req, res) => {
+  try {
+    const data = readData();
+    const index = data.findIndex((i) => i.id === parseInt(req.params.id));
+    if (index === -1) {
+      return res.status(404).json({ error: "Item not found" });
+    }
 
-// Handle 404 - Page Not Found
+    const removed = data.splice(index, 1)[0];
+    writeData(data);
+    res.status(200).json({ message: "Item removed", item: removed });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete item" });
+  }
+});
+
+// ── HTML Page Routes ───────────────────────────────────────
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.get("/list", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "list.html"));
+});
+
+app.get("/add", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "add.html"));
+});
+
+app.get("/item", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "item.html"));
+});
+
+app.get("/analytics", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "analytics.html"));
+});
+
+// ── 404 Catch-All ──────────────────────────────────────────
 app.use((req, res) => {
-    res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
+  if (req.path.startsWith("/api")) {
+    return res.status(404).json({ error: "API endpoint not found" });
+  }
+  res.status(404).send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>404 — Not Found</title>
+      <link rel="stylesheet" href="/css/style.css">
+    </head>
+    <body>
+      <nav class="navbar">
+        <a href="/" class="nav-brand">🛒 ShopperPet</a>
+        <div class="nav-links">
+          <a href="/list">List</a>
+          <a href="/add">Add</a>
+          <a href="/analytics">Analytics</a>
+        </div>
+      </nav>
+      <main class="container">
+        <div class="error-page">
+          <h1>404</h1>
+          <p>The page you're looking for doesn't exist.</p>
+          <a href="/" class="btn btn-primary">Go Home</a>
+        </div>
+      </main>
+    </body>
+    </html>
+  `);
 });
 
-// Handle server errors
-app.use((err, req, res, next) => {
-    console.error('Server Error:', err);
-    res.status(500).json({
-        success: false,
-        message: 'Internal server error'
-    });
-});
-
-// =============================================================================
-// START SERVER
-// =============================================================================
-
+// ── Start Server ───────────────────────────────────────────
 app.listen(PORT, () => {
-    console.log(`
-    ╔════════════════════════════════════════════════════════╗
-    ║                                                        ║
-    ║   🚀 Task Manager Server Running!                      ║
-    ║                                                        ║
-    ║   Local:  http://localhost:${PORT}                       ║
-    ║                                                        ║
-    ║   Routes:                                              ║
-    ║   • Home:   http://localhost:${PORT}/                    ║
-    ║   • Tasks:  http://localhost:${PORT}/tasks               ║
-    ║   • About:  http://localhost:${PORT}/about               ║
-    ║                                                        ║
-    ║   API Endpoints:                                       ║
-    ║   • GET    /api/items      - Get all items             ║
-    ║   • GET    /api/items/:id  - Get single item           ║
-    ║   • POST   /api/items      - Create new item           ║
-    ║   • DELETE /api/items/:id  - Delete an item            ║
-    ║                                                        ║
-    ╚════════════════════════════════════════════════════════╝
-    `);
+  console.log(`ShopperPet server running at http://localhost:${PORT}`);
 });
