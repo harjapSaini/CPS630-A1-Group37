@@ -1,127 +1,74 @@
-// ── List Page Logic ─────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", function () {
   loadList();
-
-  document.getElementById('download-btn').addEventListener('click', downloadList);
+  document.getElementById("download-btn").addEventListener("click", downloadList);
 });
 
-async function loadList() {
-  const container = document.getElementById('grocery-list');
-
-  try {
-    const res = await fetch('/api/list');
-    const data = await res.json();
-
+function loadList() {
+  var container = document.getElementById("grocery-list");
+  fetch("/api/list").then(function (res) { return res.json(); }).then(function (data) {
     if (data.length === 0) {
-      container.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon">📭</div>
-          <p>Your list is empty. <a href="/add">Add some items!</a></p>
-        </div>`;
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>Your list is empty. <a href="/add">Add some items!</a></p></div>';
       return;
     }
-
-    container.innerHTML = data.map(item => {
-      const statusClass = item.status === 'In Cart' ? 'status-in-cart'
-                        : item.status === 'Purchased' ? 'status-purchased' : '';
-
-      const nextStatus = item.status === 'Pending' ? 'In Cart'
-                       : item.status === 'In Cart' ? 'Purchased' : 'Pending';
-
-      const statusIcon = item.status === 'Pending' ? '⬜'
-                       : item.status === 'In Cart' ? '🛒' : '✅';
-
-      return `
-        <div class="grocery-item ${statusClass}">
-          <div class="item-info">
-            <a href="/item?id=${item.id}" class="item-name">${escapeHtml(item.item)}</a>
-            <div class="item-meta">
-              ${escapeHtml(item.category)} · Qty: ${item.quantity} · $${item.price.toFixed(2)}
-              ${item.store ? ' · ' + escapeHtml(item.store) : ''}
-            </div>
-          </div>
-          <span class="badge badge-${item.priority.toLowerCase()}">${item.priority}</span>
-          <span class="status-tag status-${item.status.toLowerCase().replace(' ', '-')}">${statusIcon} ${item.status}</span>
-          <div class="item-actions">
-            <button class="btn btn-secondary btn-sm" onclick="toggleStatus(${item.id}, '${nextStatus}')" title="Mark as ${nextStatus}">
-              ${nextStatus === 'In Cart' ? '🛒' : nextStatus === 'Purchased' ? '✅' : '↩'}
-            </button>
-            <button class="btn btn-danger btn-sm" onclick="deleteItem(${item.id})" title="Remove">✕</button>
-          </div>
-        </div>`;
-    }).join('');
-
-  } catch (err) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">⚠️</div>
-        <p>Could not load list.</p>
-      </div>`;
-  }
-}
-
-async function toggleStatus(id, newStatus) {
-  try {
-    await fetch(`/api/list/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus })
-    });
-    loadList();
-    showToast(`Status updated to "${newStatus}"`);
-  } catch (err) {
-    showToast('Failed to update status');
-  }
-}
-
-async function deleteItem(id) {
-  if (!confirm('Remove this item from the list?')) return;
-
-  try {
-    const res = await fetch(`/api/list/${id}`, { method: 'DELETE' });
-    if (res.ok) {
-      loadList();
-      showToast('Item removed');
-    } else {
-      showToast('Failed to remove item');
+    var html = "";
+    for (var i = 0; i < data.length; i++) {
+      var item = data[i];
+      var statusClass = item.status === "In Cart" ? "status-in-cart" : item.status === "Purchased" ? "status-purchased" : "";
+      var nextStatus = item.status === "Pending" ? "In Cart" : item.status === "In Cart" ? "Purchased" : "Pending";
+      var statusIcon = item.status === "Pending" ? "⬜" : item.status === "In Cart" ? "🛒" : "✅";
+      var nextIcon = nextStatus === "In Cart" ? "🛒" : nextStatus === "Purchased" ? "✅" : "↩";
+      var storeText = item.store ? " · " + item.store : "";
+      html += '<div class="grocery-item ' + statusClass + '">' +
+        '<div class="item-info"><a href="/item?id=' + item.id + '" class="item-name">' + item.item + '</a>' +
+        '<div class="item-meta">' + item.category + ' · Qty: ' + item.quantity + ' · $' + item.price.toFixed(2) + storeText + '</div></div>' +
+        '<span class="badge badge-' + item.priority.toLowerCase() + '">' + item.priority + '</span>' +
+        '<span class="status-tag status-' + item.status.toLowerCase().replace(" ", "-") + '">' + statusIcon + ' ' + item.status + '</span>' +
+        '<div class="item-actions">' +
+        '<button class="btn btn-secondary btn-sm" onclick="toggleStatus(' + item.id + ",'" + nextStatus + "')\">" + nextIcon + '</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="deleteItem(' + item.id + ')">✕</button></div></div>';
     }
-  } catch (err) {
-    showToast('Failed to remove item');
-  }
+    container.innerHTML = html;
+  }).catch(function () {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load list.</p></div>';
+  });
 }
 
-async function downloadList() {
-  try {
-    const res = await fetch('/api/list');
-    const data = await res.json();
+function toggleStatus(id, newStatus) {
+  fetch("/api/list/" + id, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: newStatus }) })
+    .then(function () { loadList(); showToast('Status updated to "' + newStatus + '"'); })
+    .catch(function () { showToast("Failed to update status"); });
+}
 
-    const lines = data.map(item =>
-      `${item.status === 'Purchased' ? '[x]' : '[ ]'} ${item.item} (${item.category}) — Qty: ${item.quantity}, $${item.price.toFixed(2)}${item.store ? ', ' + item.store : ''}${item.notes ? ' | ' + item.notes : ''}`
-    );
+function deleteItem(id) {
+  if (!confirm("Remove this item from the list?")) return;
+  fetch("/api/list/" + id, { method: "DELETE" }).then(function (res) {
+    if (res.ok) { loadList(); showToast("Item removed"); }
+    else { showToast("Failed to remove item"); }
+  }).catch(function () { showToast("Failed to remove item"); });
+}
 
-    const text = `ShopperPet Shopping List\n${'='.repeat(30)}\n\n${lines.join('\n')}\n`;
-    const blob = new Blob([text], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'grocery-list.txt';
-    a.click();
+function downloadList() {
+  fetch("/api/list").then(function (res) { return res.json(); }).then(function (data) {
+    var lines = [];
+    for (var i = 0; i < data.length; i++) {
+      var item = data[i];
+      var line = (item.status === "Purchased" ? "[x]" : "[ ]") + " " + item.item + " (" + item.category + ") — Qty: " + item.quantity + ", $" + item.price.toFixed(2);
+      if (item.store) line += ", " + item.store;
+      if (item.notes) line += " | " + item.notes;
+      lines.push(line);
+    }
+    var text = "ShopperPet Shopping List\n==============================\n\n" + lines.join("\n") + "\n";
+    var blob = new Blob([text], { type: "text/plain" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = "grocery-list.txt"; a.click();
     URL.revokeObjectURL(url);
-    showToast('List downloaded!');
-  } catch (err) {
-    showToast('Failed to download list');
-  }
+    showToast("List downloaded!");
+  }).catch(function () { showToast("Failed to download list"); });
 }
 
-function showToast(message) {
-  const toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2500);
-}
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+function showToast(msg) {
+  var t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(function () { t.classList.remove("show"); }, 2500);
 }

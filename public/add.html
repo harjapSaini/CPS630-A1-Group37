@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-
   <nav class="navbar">
     <a href="/" class="nav-brand">🛒 ShopperPet</a>
     <div class="nav-links">
@@ -17,83 +16,43 @@
       <a href="/analytics">Analytics</a>
     </div>
   </nav>
-
   <main class="container">
     <h1>Add New Item</h1>
     <p class="subtitle">Fill in the details to add a grocery item to your list.</p>
-
     <form id="add-form" class="card" style="margin-top:0.5rem;">
       <div class="form-row">
-        <div class="form-group">
-          <label for="item">Item Name *</label>
-          <input type="text" id="item" name="item" placeholder="e.g. Apples" required>
-        </div>
-        <div class="form-group">
-          <label for="category">Category *</label>
+        <div class="form-group"><label for="item">Item Name *</label><input type="text" id="item" name="item" placeholder="e.g. Apples" required></div>
+        <div class="form-group"><label for="category">Category *</label>
           <select id="category" name="category" required>
             <option value="">Select...</option>
-            <option value="Produce">Produce</option>
-            <option value="Dairy">Dairy</option>
-            <option value="Meat">Meat</option>
-            <option value="Bakery">Bakery</option>
-            <option value="Frozen">Frozen</option>
-            <option value="Beverages">Beverages</option>
-            <option value="Snacks">Snacks</option>
-            <option value="Household">Household</option>
+            <option value="Produce">Produce</option><option value="Dairy">Dairy</option>
+            <option value="Meat">Meat</option><option value="Bakery">Bakery</option>
+            <option value="Frozen">Frozen</option><option value="Beverages">Beverages</option>
+            <option value="Snacks">Snacks</option><option value="Household">Household</option>
             <option value="Other">Other</option>
           </select>
         </div>
       </div>
-
       <div class="form-row">
-        <div class="form-group">
-          <label for="quantity">Quantity *</label>
-          <input type="number" id="quantity" name="quantity" min="1" value="1" required>
-        </div>
-        <div class="form-group">
-          <label for="price">Estimated Price ($)</label>
-          <input type="number" id="price" name="price" step="0.01" min="0" placeholder="0.00">
-        </div>
+        <div class="form-group"><label for="quantity">Quantity *</label><input type="number" id="quantity" name="quantity" min="1" value="1" required></div>
+        <div class="form-group"><label for="price">Estimated Price ($)</label><input type="number" id="price" name="price" step="0.01" min="0" placeholder="0.00"></div>
       </div>
-
       <div class="form-row">
-        <div class="form-group">
-          <label for="store">Store</label>
-          <input type="text" id="store" name="store" placeholder="e.g. Walmart">
-        </div>
-        <div class="form-group">
-          <label for="addedBy">Added By</label>
-          <input type="text" id="addedBy" name="addedBy" placeholder="e.g. Mom">
-        </div>
+        <div class="form-group"><label for="store">Store</label><input type="text" id="store" name="store" placeholder="e.g. Walmart"></div>
+        <div class="form-group"><label for="addedBy">Added By</label><input type="text" id="addedBy" name="addedBy" placeholder="e.g. Mom"></div>
       </div>
-
-      <div class="form-group">
-        <label for="priority">Priority</label>
-        <select id="priority" name="priority">
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
-          <option value="Low">Low</option>
-        </select>
+      <div class="form-group"><label for="priority">Priority</label>
+        <select id="priority" name="priority"><option value="Medium">Medium</option><option value="High">High</option><option value="Low">Low</option></select>
       </div>
-
-      <div class="form-group">
-        <label for="notes">Notes</label>
-        <textarea id="notes" name="notes" placeholder="e.g. Get the one with less salt..."></textarea>
-      </div>
-
+      <div class="form-group"><label for="notes">Notes</label><textarea id="notes" name="notes" placeholder="e.g. Get the one with less salt..."></textarea></div>
       <div id="form-error" style="color:var(--danger);font-size:0.85rem;margin-bottom:0.75rem;display:none;"></div>
-
       <div class="btn-group">
         <button type="submit" class="btn btn-primary">✓ Add to List</button>
         <a href="/" class="btn btn-secondary">✕ Cancel</a>
       </div>
     </form>
   </main>
-
-  <footer class="footer">
-    <p>ShopperPet &copy; 2026 — CPS 630 A1 Group 37</p>
-  </footer>
-
+  <footer class="footer"><p>ShopperPet &copy; 2026 — CPS 630 A1 Group 37</p></footer>
   <script src="/js/add.js"></script>
 </body>
 </html>
