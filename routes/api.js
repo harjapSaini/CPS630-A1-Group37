@@ -57,7 +57,7 @@ router.patch("/list/:id", function (req, res) {
     const data = readData();
     let idx = findItem(data, parseInt(req.params.id));
     if (idx === -1) return res.status(404).json({ error: "Item not found" });
-    const fields = ["status", "priority", "notes", "quantity", "price", "store"];
+    const fields = ["status", "priority", "notes", "quantity", "price", "store", "addedBy", "category"];
     for (let i = 0; i < fields.length; i++) {
       if (req.body[fields[i]] !== undefined) data[idx][fields[i]] = req.body[fields[i]];
     }

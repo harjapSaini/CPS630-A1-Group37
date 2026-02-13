@@ -436,6 +436,25 @@ h2 {
   justify-content: center; 
 }
 
+
+/* Edit Fields */
+.detail-grid input, .detail-grid textarea, .detail-grid select { 
+  width: 100%; 
+  padding: 0.55rem 0.75rem; 
+  border: 1px solid var(--border); 
+  border-radius: var(--radius-sm); 
+  font-family: inherit; font-size: 0.9rem; 
+  color: var(--text); 
+  background: var(--surface); 
+  transition: border-color var(--transition), box-shadow var(--transition); 
+}
+
+.detail-grid input:focus, .detail-grid textarea:focus, .detail-grid select:focus { 
+  outline: none; 
+  border-color: var(--accent); 
+  box-shadow: 0 0 0 3px rgba(42,157,143,0.15); 
+}
+
 /* Footer */
 .footer { 
   text-align: center; 
@@ -487,3 +506,5 @@ h2 {
     gap: 1rem; 
   }
 }
+
+
