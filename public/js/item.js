@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-  var container = document.getElementById("item-detail");
-  var id = new URLSearchParams(window.location.search).get("id");
+  let container = document.getElementById("item-detail");
+  let id = new URLSearchParams(window.location.search).get("id");
   if (!id) { showNotFound(container); return; }
 
   fetch("/api/list/" + id).then(function (res) {
@@ -9,14 +9,15 @@ document.addEventListener("DOMContentLoaded", function () {
   }).then(function (item) {
     if (!item) return;
     document.title = "ShopperPet — " + item.item;
-    var statusIcon = item.status === "In Cart" ? "🛒" : item.status === "Purchased" ? "✅" : "⬜";
+    const statusIcon = statusConfig[item.status]?.icon || "❓";
+    const statusClass = statusConfig[item.status]?.class || "";
     container.innerHTML =
       '<div style="margin-bottom:1rem;"><a href="/list" style="color:var(--accent);text-decoration:none;font-size:0.9rem;">← Back to List</a></div>' +
       '<div class="card">' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;"><div>' +
       '<h1 style="margin-bottom:0.25rem;">' + item.item + '</h1>' +
       '<span class="badge badge-' + item.priority.toLowerCase() + '">' + item.priority + ' Priority</span>' +
-      '<span class="status-tag status-' + item.status.toLowerCase().replace(" ", "-") + '" style="margin-left:0.35rem;">' + statusIcon + ' ' + item.status + '</span>' +
+      '<span class="status-tag ' + statusClass + '" style="margin-left:0.35rem;">' + statusIcon + ' ' + item.status + '</span>' +
       '</div></div>' +
       '<div class="detail-grid">' +
       '<span class="detail-label">Category</span><span class="detail-value">' + item.category + '</span>' +
@@ -43,10 +44,4 @@ function deleteItem(id) {
     if (res.ok) window.location.href = "/list";
     else showToast("Failed to remove item");
   }).catch(function () { showToast("Failed to remove item"); });
-}
-
-function showToast(msg) {
-  var t = document.getElementById("toast");
-  t.textContent = msg; t.classList.add("show");
-  setTimeout(function () { t.classList.remove("show"); }, 2500);
 }

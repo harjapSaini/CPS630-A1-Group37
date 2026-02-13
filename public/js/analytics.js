@@ -8,37 +8,46 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function getTotalCost(data) {
-  var t = 0;
-  for (var i = 0; i < data.length; i++) t += data[i].price * data[i].quantity;
+  let t = 0;
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].status === "In Cart"){
+      t += data[i].price * data[i].quantity;
+    }
+  };
   return t;
 }
 
 function showSummaryCards(data) {
-  var total = getTotalCost(data);
-  var pending = 0;
-  for (var i = 0; i < data.length; i++) { if (data[i].status === "Pending") pending++; }
-  var expensive = data.length > 0 ? data[0] : null;
-  for (var i = 1; i < data.length; i++) { if (data[i].price > expensive.price) expensive = data[i]; }
+  let total = getTotalCost(data);
+  let needed = 0;
+  for (let i = 0; i < data.length; i++) { if (data[i].status === lifecycle[0]) needed++; }
+  let expensive = data.length > 0 ? data[0] : null;
+  for (let i = 1; i < data.length; i++) { 
+    if ((data[i].status === "In Cart") && ((data[i].price > expensive.price))){
+      expensive = data[i]; 
+    }
+ 
+  }
   document.getElementById("total-forecast").textContent = "$" + total.toFixed(2);
-  document.getElementById("item-count").textContent = pending;
+  document.getElementById("item-count").textContent = needed;
   document.getElementById("most-expensive").textContent = expensive ? expensive.item + " ($" + expensive.price.toFixed(2) + ")" : "—";
 }
 
 function setupBudgetGauge(data) {
-  var totalCost = getTotalCost(data);
-  var input = document.getElementById("budget-input");
-  var bar = document.getElementById("budget-bar");
-  var msg = document.getElementById("budget-message");
-  var saved = localStorage.getItem("shopperpet-budget");
+  let totalCost = getTotalCost(data);
+  let input = document.getElementById("budget-input");
+  let bar = document.getElementById("budget-bar");
+  let msg = document.getElementById("budget-message");
+  let saved = localStorage.getItem("shopperpet-budget");
   if (saved) { input.value = saved; updateGauge(totalCost, parseFloat(saved)); }
   document.getElementById("set-budget-btn").addEventListener("click", function () {
-    var budget = parseFloat(input.value);
+    let budget = parseFloat(input.value);
     if (!budget || budget <= 0) { msg.textContent = "Please enter a valid budget."; msg.style.color = "var(--text-muted)"; return; }
     localStorage.setItem("shopperpet-budget", budget);
     updateGauge(totalCost, budget);
   });
   function updateGauge(cost, budget) {
-    var pct = Math.min((cost / budget) * 100, 100);
+    let pct = Math.min((cost / budget) * 100, 100);
     bar.style.width = pct + "%";
     bar.classList.remove("green", "yellow", "red");
     if (cost > budget) {
@@ -55,25 +64,28 @@ function setupBudgetGauge(data) {
 }
 
 function drawCategoryChart(data) {
-  var cats = {};
-  for (var i = 0; i < data.length; i++) {
-    var c = data[i].category, cost = data[i].price * data[i].quantity;
-    cats[c] = (cats[c] || 0) + cost;
+  let cats = {};
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].status === "In Cart"){
+      let c = data[i].category, cost = data[i].price * data[i].quantity;
+      cats[c] = (cats[c] || 0) + cost;
+    }
   }
-  var labels = Object.keys(cats), values = Object.values(cats);
-  var colors = ["#2a9d8f","#e63946","#f4a261","#264653","#e9c46a","#606c38","#457b9d","#bc6c25","#6a4c93","#1d3557"];
+  let labels = Object.keys(cats), values = Object.values(cats);
   new Chart(document.getElementById("category-chart").getContext("2d"), {
     type: "doughnut",
-    data: { labels: labels, datasets: [{ data: values, backgroundColor: colors.slice(0, labels.length), borderWidth: 2, borderColor: "#fff" }] },
+    data: { labels: labels, datasets: [{ data: values, backgroundColor: chartColors.slice(0, labels.length), borderWidth: 2, borderColor: "#fff" }] },
     options: { responsive: true, plugins: { legend: { position: "bottom" } } }
   });
 }
 
 function drawSpenderChart(data) {
-  var sp = {};
-  for (var i = 0; i < data.length; i++) {
-    var name = data[i].addedBy || "Anonymous", cost = data[i].price * data[i].quantity;
-    sp[name] = (sp[name] || 0) + cost;
+  let sp = {};
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].status === "In Cart"){
+      let name = data[i].addedBy || "Anonymous", cost = data[i].price * data[i].quantity;
+      sp[name] = (sp[name] || 0) + cost;
+    }
   }
   new Chart(document.getElementById("spender-chart").getContext("2d"), {
     type: "bar",
