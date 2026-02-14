@@ -1,12 +1,16 @@
+// add item page
 document.addEventListener("DOMContentLoaded", initAddPage);
 
 function initAddPage() {
-  const form = document.getElementById("add-form");
-  const errorEl = document.getElementById("form-error");
+  let form = document.getElementById("add-form");
+  let errorEl = document.getElementById("form-error");
 
-  form.addEventListener("submit", (e) => handleSubmit(e, form, errorEl));
+  form.addEventListener("submit", function (e) {
+    handleSubmit(e, form, errorEl);
+  });
 }
 
+// grab all the form values and put them in an object
 function buildRequestBody(form) {
   return {
     item: form.item.value.trim(),
@@ -21,6 +25,7 @@ function buildRequestBody(form) {
   };
 }
 
+// check that the required fields arent empty
 function validateItem(body) {
   return body.item && body.category && body.quantity;
 }
@@ -29,31 +34,41 @@ function handleSubmit(e, form, errorEl) {
   e.preventDefault();
   errorEl.style.display = "none";
 
-  const body = buildRequestBody(form);
+  let body = buildRequestBody(form);
 
+  // check required fields
   if (!validateItem(body)) {
     showFormError(errorEl, "Please fill in Item Name, Category, and Quantity.");
     return;
   }
 
+  // send data to the server
   submitItem(body, errorEl);
 }
 
-// Network layer
+// show an error message on the form
+function showFormError(errorEl, msg) {
+  errorEl.textContent = msg;
+  errorEl.style.display = "block";
+}
+
+// send the new item to the api
 function submitItem(body, errorEl) {
   fetch("/api/list", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body)
   })
-    .then(res => {
-      if (res.ok) window.location.href = "/list";
-      else res.json().then(err =>
-        showFormError(errorEl, err.error || "Failed to add item.")
-      );
+    .then(function (res) {
+      if (res.ok) {
+        window.location.href = "/list";
+      } else {
+        res.json().then(function (err) {
+          showFormError(errorEl, err.error || "Failed to add item.");
+        });
+      }
     })
-    .catch(() =>
-      showFormError(errorEl, "Network error. Please try again.")
-    );
+    .catch(function () {
+      showFormError(errorEl, "Network error. Please try again.");
+    });
 }
-
