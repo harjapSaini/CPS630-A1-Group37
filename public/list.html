@@ -5,10 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ShopperPet — Shopping List</title>
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=shopping_cart" />
+  <script src="/js/constant.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/list.js"></script>
 </head>
 <body>
   <nav class="navbar">
-    <a href="/" class="nav-brand">🛒 ShopperPet</a>
+    <a href="/" class="nav-brand"><span class="material-symbols-outlined nav-brand-icon">shopping_cart</span> ShopperPet</a>
     <div class="nav-links">
       <a href="/">Home</a>
       <a href="/list" class="active">List</a>
@@ -23,16 +27,15 @@
         <p class="subtitle" style="margin-bottom:0;">All your grocery items in one place.</p>
       </div>
       <div class="btn-group">
-        <a href="/add" class="btn btn-primary">➕ Add Item</a>
-        <button id="download-btn" class="btn btn-secondary">⬇ Download</button>
+        <a href="/add" class="btn btn-primary">Add Item</a>
+        <button id="download-btn" class="btn btn-secondary">Download</button>
       </div>
     </div>
     <div id="grocery-list" class="grocery-list">
-      <div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div>
+      <div class="empty-state"><p>Loading...</p></div>
     </div>
   </main>
   <div id="toast" class="toast"></div>
   <footer class="footer"><p>ShopperPet &copy; 2026 — CPS 630 A1 Group 37</p></footer>
-  <script src="/js/list.js"></script>
 </body>
 </html>
