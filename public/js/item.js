@@ -23,18 +23,25 @@ document.addEventListener("DOMContentLoaded", function () {
       showNotFound(container);
     });
 
+  function getStatusClass(status) {
+    if (status === "Needed") return "status-needed";
+    if (status === "In Cart") return "status-in-cart";
+    if (status === "Purchased") return "status-purchased";
+    if (status === "Consumed") return "status-consumed";
+    return "";
+  }
+
   function renderView() {
 
-    const statusIcon = statusConfig[currentItem.status]?.icon || "❓";
-    const statusClass = statusConfig[currentItem.status]?.class || "";
+    const statusClass = getStatusClass(currentItem.status);
 
     container.innerHTML =
-      '<div style="margin-bottom:1rem;"><a href="/list" style="color:var(--accent);text-decoration:none;font-size:0.9rem;">← Back to List</a></div>' +
+      '<div style="margin-bottom:1rem;"><a href="/list" style="color:teal;text-decoration:none;font-size:0.9rem;">Back to List</a></div>' +
       '<div class="card">' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;"><div>' +
       '<h1 style="margin-bottom:0.25rem;">' + currentItem.item + '</h1>' +
       '<span class="badge badge-' + currentItem.priority.toLowerCase() + '">' + currentItem.priority + ' Priority</span>' +
-      '<span class="status-tag ' + statusClass + '" style="margin-left:0.35rem;">' + statusIcon + ' ' + currentItem.status + '</span>' +
+      '<span class="status-tag ' + statusClass + '" style="margin-left:0.35rem;">' + currentItem.status + '</span>' +
       '</div></div>' +
       '<div class="detail-grid">' +
       '<span class="detail-label">Category</span><span class="detail-value">' + currentItem.category + '</span>' +
@@ -46,23 +53,22 @@ document.addEventListener("DOMContentLoaded", function () {
       '<span class="detail-label">Notes</span><span class="detail-value">' + (currentItem.notes || "—") + '</span>' +
       '</div>' +
       '<div class="btn-group" style="margin-top:1.25rem;">' +
-      '<button class="btn btn-secondary" onclick="toggleEdit()">✏️ Edit</button>' +
-      '<button class="btn btn-danger" onclick="deleteItem(' + currentItem.id + ')">🗑 Remove Item</button>' +
+      '<button class="btn btn-secondary" onclick="toggleEdit()">Edit</button>' +
+      '<button class="btn btn-danger" onclick="deleteItem(' + currentItem.id + ')">Remove Item</button>' +
       '</div></div>';
   }
 
   function renderEdit() {
 
-    const statusIcon = statusConfig[currentItem.status]?.icon || "❓";
-    const statusClass = statusConfig[currentItem.status]?.class || "";
+    const statusClass = getStatusClass(currentItem.status);
 
     container.innerHTML =
-      '<div style="margin-bottom:1rem;"><a href="/list" style="color:var(--accent);text-decoration:none;font-size:0.9rem;">← Back to List</a></div>' +
+      '<div style="margin-bottom:1rem;"><a href="/list" style="color:teal;text-decoration:none;font-size:0.9rem;">Back to List</a></div>' +
       '<div class="card">' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;"><div>' +
       '<h1>Edit ' + currentItem.item + '</h1>' +
       '<span class="badge badge-' + currentItem.priority.toLowerCase() + '">' + currentItem.priority + ' Priority</span>' +
-      '<span class="status-tag ' + statusClass + '" style="margin-left:0.35rem;">' + statusIcon + ' ' + currentItem.status + '</span>' +
+      '<span class="status-tag ' + statusClass + '" style="margin-left:0.35rem;">' + currentItem.status + '</span>' +
       '</div></div>' +
       '<div class="detail-grid">' +
       '<span class="detail-label">Category</span>' +
@@ -84,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
       '<span class="detail-label">Notes</span>' + '<textarea id="edit-notes">' + (currentItem.notes || "") + '</textarea>' +
       '</div>' +
       '<div class="btn-group" style="margin-top:1.25rem;">' +
-      '<button class="btn btn-primary" onclick="saveChanges()">💾 Save</button>' +
+      '<button class="btn btn-primary" onclick="saveChanges()">Save</button>' +
       '<button class="btn btn-secondary" onclick="toggleEdit()">Cancel</button>' +
       '</div></div></div>';
   }
@@ -119,17 +125,16 @@ document.addEventListener("DOMContentLoaded", function () {
         currentItem = updated;
         isEditing = false;
         renderView();
-        showToast("Item updated successfully");
       })
       .catch(function () {
-        showToast("Failed to update item");
+        alert("Failed to update item");
       });
   };
 
 });
 
 function showNotFound(c) {
-  c.innerHTML = '<div class="error-page"><h1>404</h1><p>Item not found.</p><a href="/list" class="btn btn-primary">← Back to List</a></div>';
+  c.innerHTML = '<div class="error-page"><h1>404</h1><p>Item not found.</p><a href="/list" class="btn btn-primary">Back to List</a></div>';
 }
 
 function deleteItem(id) {
@@ -137,9 +142,9 @@ function deleteItem(id) {
   fetch("/api/list/" + id, { method: "DELETE" })
     .then(function (res) {
       if (res.ok) window.location.href = "/list";
-      else showToast("Failed to remove item");
+      else alert("Failed to remove item");
     })
     .catch(function () {
-      showToast("Failed to remove item");
+      alert("Failed to remove item");
     });
 }
