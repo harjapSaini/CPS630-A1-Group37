@@ -67,6 +67,7 @@ function toggleStatus(id, newStatus) {
     body: JSON.stringify({ status: newStatus })
   })
     .then(function () {
+      showToast("Status changed to " + newStatus);
       loadList();
     })
     .catch(function () {
@@ -81,6 +82,7 @@ function deleteItem(id) {
   fetch("/api/list/" + id, { method: "DELETE" })
     .then(function (res) {
       if (res.ok) {
+        showToast("Item removed");
         loadList();
       } else {
         alert("Failed to remove item");

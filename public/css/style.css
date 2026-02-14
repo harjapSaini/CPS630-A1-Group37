@@ -1,35 +1,42 @@
-/* reset */
+/* GLOBAL RESET 
+   removes all the default browser spacing/padding so everything
+   starts from scratch. border-box makes width calculations way easier */
 * { 
   margin: 0; 
   padding: 0; 
   box-sizing: border-box; 
 }
 
-/* main body */
+/* main body - using Arial as fallback since its on most systems */
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background: whitesmoke; 
+  background: whitesmoke; /* light gray bg so cards stand out */
   color: black; 
 }
 
-/* navbar */
+/* NAVBAR 
+   sticky so it stays at top when scrolling, z-index keeps it above everything */
 .navbar { 
   background: white; 
   display: flex; 
   align-items: center; 
-  justify-content: space-between; 
+  justify-content: space-between; /* pushes logo left and links right */
   padding: 12px 24px; 
   border-bottom: 1px solid lightgray; 
   position: sticky; 
   top: 0; 
-  z-index: 100; 
+  z-index: 100; /* high z-index so nothing overlaps it */
 }
+
+/* the brand/logo text in the navbar */
 .nav-brand { 
   font-size: 20px; 
   font-weight: 700; 
   color: teal; 
   text-decoration: none; 
 }
+
+/* navigation links container */
 .nav-links { 
   display: flex; 
   gap: 24px; 
@@ -40,20 +47,25 @@ body {
   font-weight: 500; 
   font-size: 14px; 
 }
+/* bold on hover so user knows its clickable */
 .nav-links a:hover { 
   font-weight: bold;
 }
+/* active link is also bold to show which page you're on */
 .nav-links a.active { 
   font-weight: bold;
 }
 
+/* main content wrapper - centers everything and caps the width */
 .container { 
   max-width: 720px; 
-  margin: 0 auto;
+  margin: 0 auto; /* auto margin centers it horizontally */
   padding-left: 20px;
-  padding-right: 20px; 
+  padding-right: 20px;
+  padding-bottom: 40px;
 }
 
+/* page headings - teal color to match the brand */
 h1 { 
   font-size: 28px; 
   font-weight: 700; 
@@ -67,25 +79,29 @@ h2 {
   padding-bottom: 10px;
 }
 
+/* subtitle text under headings, lighter color so it doesnt compete with h1 */
 .subtitle { 
   color: gray; 
   font-size: 15px; 
   padding-bottom: 10px;
 }
 
+/* emoji icon next to the brand name - had to nudge it up 3px to line up right */
 .nav-brand-icon {
   font-size: 20px !important;
   vertical-align: middle;
   position: relative;
-  top: -3px;
+  top: -3px; /* small tweak to vertically center the emoji */
 }
 
+/* icon next to page titles */
 .title-icon {
   font-size: 25px !important;
   margin-right: 6px;
 }
 
-/* buttons */
+/* BUTTONS 
+   base button style, then primary/secondary variants below */
 .btn { 
   display: inline-flex; 
   align-items: center; 
@@ -96,13 +112,15 @@ h2 {
   font-weight: 500; 
   cursor: pointer; 
 }
+/* main action button - teal to match brand */
 .btn-primary { 
   background: teal; 
   color: white;
 }
 .btn-primary:hover { 
-  background: darkslategray; 
+  background: darkslategray; /* slightly darker on hover */
 }
+/* secondary buttons for less important actions like cancel */
 .btn-secondary { 
   background: lightgray; 
   color: black; 
@@ -111,17 +129,19 @@ h2 {
   background: silver;
 }
 
+/* smaller button variant for tight spaces like item cards */
 .btn-sm { 
   padding: 6px 11px; 
   font-size: 13px; 
 }
+/* container for grouping buttons together with spacing */
 .btn-group { 
   display: flex; 
   gap: 8px; 
-  flex-wrap: wrap; 
+  flex-wrap: wrap; /* wraps to next line if too many buttons */
 }
 
-/* cards */
+/* generic card component - white box with border */
 .card { 
   background: white; 
   border: 1px solid lightgray; 
@@ -129,31 +149,38 @@ h2 {
   padding: 20px; 
 }
 
-/* priority badges */
+/* PRIORITY BADGES 
+   small colored pills that show how urgent an item is.
+   999px border-radius is a trick to make it fully rounded */
 .badge { 
   display: inline-block; 
   padding-top: 2px;
   padding-bottom: 2px;
   padding-left: 9px;
   padding-right: 9px;
-  border-radius: 999px; 
+  border-radius: 999px; /* makes it a pill shape */
   font-size: 11px; 
   font-weight: bold; 
 }
+/* red-ish for high priority */
 .badge-high { 
   background: lightpink; 
   color: crimson; 
 }
+/* orange/yellow for medium */
 .badge-medium { 
   background: wheat; 
   color: chocolate; 
 }
+/* teal/cyan for low priority */
 .badge-low { 
   background: lightcyan; 
   color: teal; 
 }
 
-/* status styles */
+/* STATUS STYLES 
+   items get crossed out when they're in cart or purchased
+   each status has its own color so you can tell at a glance */
 .status-in-cart .item-name { 
   text-decoration: line-through; 
   color: gray; 
@@ -162,12 +189,15 @@ h2 {
   text-decoration: line-through; 
   color: gray; 
 }
+
+/* the little status pill/tag */
 .status-tag { 
   font-size: 12px; 
   font-weight: 500; 
   padding: 2px 7px; 
   border-radius: 999px;
 }
+/* each status gets a different background color */
 .status-needed { 
   background: mistyrose;
   color: darkred;
@@ -185,12 +215,15 @@ h2 {
   color: darkblue;
 }
 
-/* the item cards on list page */
+/* GROCERY LIST (list page) 
+   each item is a row with info on the left and action buttons on the right */
 .grocery-list { 
   display: flex; 
   flex-direction: column; 
   gap: 8px; 
 }
+
+/* individual grocery item row */
 .grocery-item { 
   display: flex; 
   background: white; 
@@ -202,13 +235,16 @@ h2 {
   padding-left: 16px;
   padding-right: 16px;
 }
+/* darkens border on hover so user knows its interactive */
 .grocery-item:hover { 
   border-color: black; 
 }
+/* flex: 1 makes the info section take up remaining space */
 .grocery-item .item-info { 
   flex: 1; 
-  min-width: 0; 
+  min-width: 0; /* needed so text can truncate properly */
 }
+/* item name is clickable link to the detail page */
 .grocery-item .item-name { 
   font-weight: 600; 
   font-size: 15px; 
@@ -219,18 +255,21 @@ h2 {
 .grocery-item .item-name:hover { 
   text-decoration: underline; 
 }
+/* category + quantity info below the item name */
 .grocery-item .item-meta { 
   font-size: 13px; 
   color: gray; 
   margin-top: 2px; 
 }
+/* action buttons on the right side of each item */
 .grocery-item .item-actions { 
   display: flex; 
   gap: 6px; 
   align-items: center; 
 }
 
-/* form styles */
+/* FORM STYLES 
+   used on the add item page and edit form */
 .form-group { 
   margin-bottom: 16px; 
 }
@@ -241,6 +280,7 @@ h2 {
   font-size: 14px; 
   color: black; 
 }
+/* all form inputs share the same basic styling */
 .form-group input { 
   width: 100%; 
   padding: 9px 12px; 
@@ -265,6 +305,7 @@ h2 {
   color: black; 
   background: white; 
 }
+/* teal border on focus to show which field is active */
 .form-group input:focus { 
   outline: none; 
   border-color: teal; 
@@ -277,16 +318,18 @@ h2 {
   outline: none; 
   border-color: teal; 
 }
+/* two column layout for side-by-side form fields */
 .form-row { 
   display: grid; 
-  grid-template-columns: 1fr 1fr; 
+  grid-template-columns: 1fr 1fr; /* equal width columns */
   gap: 16px; 
 }
 
-/* item detail page grid */
+/* ITEM DETAIL PAGE 
+   uses a 2-column grid: labels on left, values on right */
 .detail-grid { 
   display: grid; 
-  grid-template-columns: auto 1fr; 
+  grid-template-columns: auto 1fr; /* label column auto-sizes, value takes the rest */
   margin: 16px 0; 
   gap: 8px 20px; 
 }
@@ -299,11 +342,14 @@ h2 {
   font-size: 15px; 
 }
 
-/* analytics page */
+/* ANALYTICS PAGE 
+   top row has 3 summary cards showing totals, then budget tracker, then charts */
+
+/* the 3 summary cards at the top (total items, cost, etc) */
 .summary-cards { 
   display: grid; 
   margin-bottom: 24px; 
-  grid-template-columns: repeat(3, 1fr); 
+  grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
   gap: 12px; 
 }
 .summary-card { 
@@ -326,6 +372,7 @@ h2 {
   color: gray; 
 }
 
+/* budget tracker section */
 .budget-section { 
   margin-bottom: 24px; 
 }
@@ -341,13 +388,16 @@ h2 {
   border: 1px solid lightgray; 
   font-size: 14px; 
 }
+/* progress bar background */
 .budget-bar-container { 
   background: gainsboro; 
   height: 24px; 
 }
+/* the filled part of the bar - width set by JS */
 .budget-bar { 
   height: 100%; 
 }
+/* bar color changes based on how close to budget you are */
 .budget-bar.green { 
   background: green; 
 }
@@ -363,6 +413,7 @@ h2 {
   font-weight: 500; 
 }
 
+/* charts section - 2 charts side by side */
 .chart-grid { 
   display: grid; 
   grid-template-columns: 1fr 1fr; 
@@ -381,13 +432,14 @@ h2 {
   margin-bottom: 12px; 
 }
 
-/* error and empty states */
+/* ERROR + EMPTY STATES 
+   shown when theres a 404 or the grocery list is empty */
 .error-page { 
   text-align: center; 
   padding: 48px 0; 
 }
 .error-page h1 { 
-  font-size: 64px; 
+  font-size: 64px; /* big number looks nice for 404 */
   color: teal; 
   margin-bottom: 8px; 
 }
@@ -395,28 +447,32 @@ h2 {
   color: gray; 
   margin-bottom: 24px; 
 }
+/* message shown when grocery list has no items yet */
 .empty-state { 
   text-align: center; 
   padding: 32px; 
   color: gray; 
 }
 
-/* home page hero section */
+/* HOME PAGE HERO 
+   the big welcome section at the top of the home page */
 .hero { 
   text-align: center; 
   padding-top: 32px;
   padding-bottom: 24px;
 }
 .hero h1 { 
-  font-size: 32px; 
+  font-size: 32px; /* bigger than normal h1 since its the hero */
 }
 .hero .subtitle { 
   margin-bottom: 20px; 
 }
 .hero .btn-group { 
-  justify-content: center; 
+  justify-content: center; /* centers the CTA buttons */
 }
 
+/* form inputs inside the detail grid (for inline editing on item page)
+   same styles as the regular form inputs, just scoped to the detail grid */
 .detail-grid input { 
   width: 100%; 
   padding: 9px 12px; 
@@ -442,6 +498,7 @@ h2 {
   background: white; 
 }
 
+/* focus states for detail grid inputs - same teal border */
 .detail-grid input:focus { 
   outline: none; 
   border-color: teal; 
@@ -455,7 +512,7 @@ h2 {
   border-color: teal; 
 }
 
-/* footer */
+/* footer at the bottom of every page */
 .footer { 
   text-align: center; 
   padding: 32px 0; 
@@ -463,6 +520,8 @@ h2 {
   font-size: 13px; 
 }
 
+/* toast notification - pops up in bottom right corner
+   used to confirm actions like adding or deleting an item */
 .toast { 
   position: fixed; 
   bottom: 24px; 
@@ -470,5 +529,14 @@ h2 {
   background: black; 
   color: white;
   padding: 12px 20px; 
-  font-size: 14px; 
+  font-size: 14px;
+  border-radius: 6px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+/* when JS adds the show class, make it visible */
+.toast.show {
+  opacity: 1;
+  visibility: visible;
 }

@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .then(function (item) {
       if (!item) return;
       current_item = item;
-      document.title = "ShopperPet — " + item.item;
+      document.title = "ShopperPet " + item.item;
       renderView();
     })
     .catch(function () {
@@ -46,10 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let statusClass = getStatusClass(current_item.status);
 
     let html = '';
-    html += '<div style="margin-bottom:1rem;">';
-    html += '<a href="/list" style="color:teal;text-decoration:none;font-size:0.9rem;">Back to List</a>';
-    html += '</div>';
-    html += '<div class="card">';
+    html += '<div class="card" style="margin-top:1rem;">';
 
     // item name and badges
     html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;"><div>';
@@ -73,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
     html += '<div class="btn-group" style="margin-top:1.25rem;">';
     html += '<button id="edit-btn" class="btn btn-secondary">Edit</button>';
     html += '<button id="delete-btn" class="btn btn-danger">Remove Item</button>';
+    html += '<a href="/list" class="btn btn-secondary">Back to List</a>';
     html += '</div></div>';
 
     container.innerHTML = html;
@@ -88,9 +86,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let statusClass = getStatusClass(current_item.status);
 
     let html = '';
-    html += '<div style="margin-bottom:1rem;">';
-    html += '<a href="/list" style="color:teal;text-decoration:none;font-size:0.9rem;">Back to List</a>';
-    html += '</div>';
     html += '<form id="edit-form" class="card">';
     html += '<h1>Edit ' + current_item.item + '</h1>';
 
@@ -123,6 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
     html += '<div class="btn-group" style="margin-top:1.25rem;">';
     html += '<button type="submit" class="btn btn-primary">Save</button>';
     html += '<button type="button" id="cancel-btn" class="btn btn-secondary">Cancel</button>';
+    html += '<a href="/list" class="btn btn-secondary">Back to List</a>';
     html += '</div></form>';
 
     container.innerHTML = html;

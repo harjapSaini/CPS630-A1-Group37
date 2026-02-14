@@ -1,70 +1,68 @@
 # ShopperPet 🛒
 
-A simple, minimalistic multi-page grocery list web application built with **Node.js**, **Express**, **HTML**, **CSS**, and **JavaScript**.
+A grocery list web app we built for CPS 630 Assignment 1. It's made with **Node.js**, **Express**, and plain **HTML/CSS/JS** — no frameworks on the frontend.
 
-## Overview
+## What is it?
 
-ShopperPet helps you plan and manage your grocery shopping. Add items with details like price, quantity, priority, and store. Then you can view, track, and analyze your spending all in one place.
+ShopperPet is basically a grocery list manager. You can add grocery items, track them through different statuses (like needed, in cart, purchased), and see some analytics about your spending. We tried to keep the design clean and simple.
 
-**Key Features:**
+Here's what you can do with it:
 
-- **Add Items** — Quick form with category, priority, price, and notes for now.
-- **Shopping List** — View all items with status tracking (Needed → In Cart → Purchased → Consumed)
-- **Item Details** — Drill into any item for full information
-- **Item Edit** - Once drilled into the item, you can also edit item details in a form.
-- **Analytics Dashboard** — Spending forecast, category breakdown, spender leaderboard, and budget gauge. This only works for items that are currently in cart. May change in future. Ideal scenario is going to shopping and putting items in cart, but before going to cashier you can guess the cost using our app. Based on spender leader board, family members could even split the bill.
-- **Download** — Export your list as a `.txt` file. **[x]** means item in cart, **[]** means item in needed status.
+- **Add Items** — theres a form where you fill in category, priority, price, notes, etc.
+- **Shopping List** — see all your items, change their status (Needed → In Cart → Purchased → Consumed), or delete them
+- **Item Details** — click on any item to see all its info
+- **Edit Items** - you can also edit item details from the detail page
+- **Analytics** — a dashboard that shows spending breakdowns, category charts, and a budget tracker. Right now it only looks at items that are "In Cart". The idea is you'd use it while shopping to estimate how much you'll spend before going to the cashier. Theres also a spender leaderboard so family members could split the bill
+- **Download List** — lets you export your list as a `.txt` file. **[x]** means its in cart, **[]** means its still needed
 
-**Future Extensions:**
+**Stuff we want to add later:**
 
-- Database integration (MongoDB) as mentioned in class to replace the JSON file
-- User authentication and per-user lists (possibly)
-- React frontend for a richer experience and as well as re-usable componenets.
+- Hook it up to MongoDB instead of using a JSON file (prof mentioned this for future assignments)
+- Maybe add user login so different people can have their own lists
+- Possibly redo the frontend in React so we can reuse components
 
 ---
 
-## Documentation
+## How to Run It
 
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) v16 or higher
-
-### Setup & Run
+You need [Node.js](https://nodejs.org/) (v16+).
 
 ```bash
-# 1. Install dependencies
+# install the packages
 npm install
 
-# 2. Start the server
+# start it up
 npm start
 ```
 
-The app will be available at **http://localhost:8080**.
+Then go to **http://localhost:8080** in your browser.
 
 ### Pages
 
-| Route        | Page          | Description                             |
-| ------------ | ------------- | --------------------------------------- |
-| `/`          | Home          | Landing page with recent items          |
-| `/list`      | Shopping List | View all items, toggle status, delete   |
-| `/add`       | Add Item      | Form to add a new grocery item          |
-| `/analytics` | Analytics     | Spending dashboard with charts & budget |
-| `/item?id=x` | Item Details  | Detailed view of a single item          |
-| `/item?id=x` | Edit Item Details     | Users can edit signle item's details |
+| Route        | Page          | What it does                          |
+| ------------ | ------------- | ------------------------------------- |
+| `/`          | Home          | Landing page, shows some recent items |
+| `/list`      | Shopping List | All your items, change status, delete |
+| `/add`       | Add Item      | Form to add a new grocery item        |
+| `/analytics` | Analytics     | Charts and budget tracking            |
+| `/item?id=x` | Item Details  | See all info for one item             |
+| `/item?id=x` | Edit Item     | Edit that item's details              |
 
-### REST API
+### API Endpoints
 
-| Method   | Endpoint        | Description                      | Status Codes |
-| -------- | --------------- | -------------------------------- | ------------ |
-| `GET`    | `/api/list`     | Get all grocery items            | 200          |
-| `GET`    | `/api/list/:id` | Get a single item by ID          | 200 / 404    |
-| `POST`   | `/api/list`     | Add a new item                   | 201 / 400    |
-| `PATCH`  | `/api/list/:id` | Update item fields (e.g. status) | 200 / 404    |
-| `DELETE` | `/api/list/:id` | Remove an item                   | 200 / 404    |
+We built a REST API that the frontend talks to using fetch. Here are the routes:
+
+| Method   | Endpoint        | What it does                  | Status Codes |
+| -------- | --------------- | ----------------------------- | ------------ |
+| `GET`    | `/api/list`     | Returns all grocery items     | 200          |
+| `GET`    | `/api/list/:id` | Returns one item by its ID    | 200 / 404    |
+| `POST`   | `/api/list`     | Adds a new item               | 201 / 400    |
+| `PATCH`  | `/api/list/:id` | Updates an item (like status) | 200 / 404    |
+| `DELETE` | `/api/list/:id` | Deletes an item               | 200 / 404    |
 
 ### Data Model
 
-Each grocery item has the following fields:
+Each grocery item looks like this:
 
 | Field       | Type   | Description                                |
 | ----------- | ------ | ------------------------------------------ |
@@ -75,45 +73,45 @@ Each grocery item has the following fields:
 | `price`     | Number | Estimated price ($)                        |
 | `store`     | String | Store name                                 |
 | `addedBy`   | String | Who added the item                         |
-| `priority`  | String | High / Medium / Low (color-coded)          |
-| `status`    | String | Pending / In Cart / Purchased              |
+| `priority`  | String | High / Medium / Low                        |
+| `status`    | String | Needed / In Cart / Purchased / Consumed    |
 | `notes`     | String | Optional notes                             |
-| `dateAdded` | String | ISO date, auto-set by server               |
+| `dateAdded` | String | ISO date, auto-set when item is created    |
 
 ---
 
 ## Reflection
 
-### What Was Built
+### What we built
 
-A full multi-page grocery list application with a Node.js/Express backend serving a REST API and static HTML/CSS/JS frontend pages. Data is persisted in a JSON file (`grocery-data.json`) on the server, for now.
+We made a full multi-page grocery app with a Node/Express backend that serves a REST API, and the frontend is just static HTML/CSS/JS files. All the data gets saved to a JSON file (`grocery-data.json`) on the server for now — we'll probably switch to a database later.
 
-### Challenges
+### Challenges we ran into
 
-- Keeping the UI clean and minimal while supporting many item fields (priority, status, notes, price, etc.)
-- Implementing status toggling (Needed → In Cart → Purchased → Consumed) with visual feedback (color badges)
-- Building a client-side analytics dashboard with Chart.js that computes meaningful insights from raw data
-- Making it modular.
+- Trying to keep the UI looking clean when theres so many fields per item (priority, status, notes, price, store, etc.) was harder than we thought
+- Getting the status toggling to work smoothly (Needed → In Cart → Purchased → Consumed) with the colored badges took some trial and error
+- The analytics page was tricky — we used Chart.js and had to figure out how to compute the stats from the raw data on the client side
+- Keeping things modular so we didn't end up with one giant file
 
-### Successes
+### What went well
 
-- Clean separation between server (API) and client (static pages with fetch-based JS)
-- Modular code structure with separate JS files per page
-- Responsive design that works well on mobile and desktop
-- The analytics page provides real value — spending forecasts, category breakdowns, and a budget gauge
+- We kept the server and client code pretty separate which made things easier to debug
+- Each page has its own JS file so its not all jammed into one script
+- The design works on mobile too which is nice
+- Analytics page actually turned out to be useful — the spending forecast and budget gauge are pretty cool
 
-### What We Learned
+### What we learned
 
-- **Full Client–Server Workflow**: We gained hands-on experience building and connecting a frontend to a backend using REST principles, understanding how requests, responses, and status codes work together.
-- **Planning Before Coding**:Designing routes, data structure, and API responses before implementation reduced bugs and improved overall code clarity.
-- **QA Testing**: We understood as a team that there had be unit tests for every possible outcome of the application, as some underlying bugs were not easily recognizable just through development
+- **Client-Server stuff**: Got hands-on experience connecting a frontend to a backend with REST. Understanding how requests, responses, and status codes fit together was really helpful.
+- **Planning first**: We designed the routes, data structure, and API responses before jumping into code. Definitely saved us time and headaches down the road.
+- **Testing matters**: We realized pretty quickly that we needed tests for edge cases. Some bugs were not obvious at all just from using the app manually.
+
+### Version Control
+
+We used **Git** and **GitHub** for version control throughout the project. Each team member worked on their own branch and we merged changes through pull requests. This helped us avoid stepping on each other's code and made it easy to roll back if something broke. We also used commits to track progress and keep a history of what was changed and why.
 
 ## Project Status
 
-> 🚧 This project represents the initial version of our application, just enough for A1.  
-> It serves as a foundational implementation demonstrating REST API integration, client-server communication, and responsive design.  
-> Additional features and enhancements are planned for future iterations, when A2/A3 rolls out.
-
----
-
-_CPS 630 — Assignment 1 — Group 37_
+> 🚧 This is the first version of our app — just enough for A1.
+> It covers the basics: REST API, client-server communication, and a responsive UI.
+> We'll be adding more stuff when A2 and A3 come around.

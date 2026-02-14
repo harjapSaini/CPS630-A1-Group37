@@ -36,11 +36,13 @@ function showSummaryCards(data) {
     if (data[i].status === "Needed") needed++;
   }
 
-  // find the most expensive item in cart
-  let expensive = data.length > 0 ? data[0] : null;
-  for (let i = 1; i < data.length; i++) {
-    if ((data[i].status === "In Cart") && ((data[i].price > expensive.price))) {
-      expensive = data[i];
+  // find the most expensive item that is in cart
+  let expensive = null;
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].status === "In Cart") {
+      if (!expensive || data[i].price > expensive.price) {
+        expensive = data[i];
+      }
     }
   }
 
