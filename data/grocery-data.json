@@ -1,18 +1,5 @@
 [
   {
-    "id": 1,
-    "item": "Apples",
-    "category": "Produce",
-    "quantity": 6,
-    "price": 3.48,
-    "store": "Walmart",
-    "addedBy": "Mom",
-    "priority": "High",
-    "status": "Needed",
-    "notes": "Get Honeycrisp if available...",
-    "dateAdded": "2026-02-10"
-  },
-  {
     "id": 3,
     "item": "Chicken Breast",
     "category": "Meat",
@@ -21,7 +8,7 @@
     "store": "Walmart",
     "addedBy": "Mom",
     "priority": "Medium",
-    "status": "Consumed",
+    "status": "Purchased",
     "notes": "Boneless, skinless",
     "dateAdded": "2026-02-11"
   },
@@ -34,7 +21,7 @@
     "store": "Whole Foods",
     "addedBy": "Dad",
     "priority": "Low",
-    "status": "Needed",
+    "status": "Purchased",
     "notes": "",
     "dateAdded": "2026-02-11"
   },
@@ -61,7 +48,7 @@
     "addedBy": "Dad",
     "priority": "Medium",
     "status": "Purchased",
-    "notes": "",
+    "notes": "test",
     "dateAdded": "2026-02-12"
   },
   {
@@ -73,7 +60,7 @@
     "store": "No Frills",
     "addedBy": "Dad",
     "priority": "Medium",
-    "status": "In Cart",
+    "status": "Purchased",
     "notes": "",
     "dateAdded": "2026-02-13"
   },
@@ -86,7 +73,7 @@
     "store": "Costco",
     "addedBy": "Dad",
     "priority": "High",
-    "status": "Needed",
+    "status": "Purchased",
     "notes": "It's in the 2nd aisle.",
     "dateAdded": "2026-02-13"
   },
@@ -99,7 +86,7 @@
     "store": "Tesco",
     "addedBy": "Mom",
     "priority": "Medium",
-    "status": "In Cart",
+    "status": "Purchased",
     "notes": "",
     "dateAdded": "2026-02-13"
   },
@@ -112,7 +99,7 @@
     "store": "Best Buy",
     "addedBy": "Son",
     "priority": "Medium",
-    "status": "Needed",
+    "status": "Purchased",
     "notes": "I really need it",
     "dateAdded": "2026-02-14"
   }

@@ -1,6 +1,9 @@
+// shows a toast notification at the bottom of the page
 function showToast(msg) {
-  const t = document.getElementById("toast");
+  let t = document.getElementById("toast");
   t.textContent = msg;
   t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 2500);
+  setTimeout(function () {
+    t.classList.remove("show");
+  }, 2500);
 }
