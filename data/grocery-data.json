@@ -110,10 +110,23 @@
     "quantity": 1,
     "price": 2.5,
     "store": "",
-    "addedBy": "Brother",
+    "addedBy": "Son",
     "priority": "Medium",
     "status": "Needed",
     "notes": "",
     "dateAdded": "2026-02-13"
+  },
+  {
+    "id": 12,
+    "item": "Video Game",
+    "category": "Other",
+    "quantity": 1,
+    "price": 89.99,
+    "store": "Best Buy",
+    "addedBy": "Son",
+    "priority": "Medium",
+    "status": "Needed",
+    "notes": "I really need it",
+    "dateAdded": "2026-02-14"
   }
 ]
