@@ -8,7 +8,7 @@
     "store": "Walmart",
     "addedBy": "Mom",
     "priority": "High",
-    "status": "Purchased",
+    "status": "In Cart",
     "notes": "Get Honeycrisp if available...",
     "dateAdded": "2026-02-10"
   },
@@ -67,9 +67,9 @@
   {
     "id": 7,
     "item": "Oranges",
-    "category": "Dairy",
-    "quantity": 3,
-    "price": 2.2,
+    "category": "Beverages",
+    "quantity": 1,
+    "price": 0.01,
     "store": "No Frills",
     "addedBy": "Dad",
     "priority": "Medium",
@@ -86,7 +86,7 @@
     "store": "Costco",
     "addedBy": "Dad",
     "priority": "High",
-    "status": "In Cart",
+    "status": "Needed",
     "notes": "",
     "dateAdded": "2026-02-13"
   },

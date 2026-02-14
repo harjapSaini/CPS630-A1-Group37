@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     data.sort(function (a, b) { return b.id - a.id; });
     const recent = data.slice(0, 3);
     if (recent.length === 0) {
-      container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>No items yet. <a href="/add">Add your first one!</a></p></div>';
+      container.innerHTML = '<div class="empty-state"><p>No items yet. <a href="/add">Add your first one!</a></p></div>';
       return;
     }
     let html = "";
@@ -17,6 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     container.innerHTML = html;
   }).catch(function () {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load items.</p></div>';
+    container.innerHTML = '<div class="empty-state"><p>Could not load items.</p></div>';
   });
 });

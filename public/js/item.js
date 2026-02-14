@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (!id) { showNotFound(container); return; }
 
-  let currentItem = null;
+  let current_item = null;
   let isEditing = false;
 
   fetch("/api/list/" + id)
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     .then(function (item) {
       if (!item) return;
-      currentItem = item;
+      current_item = item;
       document.title = "ShopperPet — " + item.item;
       renderView();
     })
@@ -23,92 +23,89 @@ document.addEventListener("DOMContentLoaded", function () {
       showNotFound(container);
     });
 
+  function getStatusClass(status) {
+    if (status === "Needed") return "status-needed";
+    if (status === "In Cart") return "status-in-cart";
+    if (status === "Purchased") return "status-purchased";
+    if (status === "Consumed") return "status-consumed";
+    return "";
+  }
+
+  // ================= VIEW =================
 
   function renderView() {
 
-    const statusIcon = statusConfig[currentItem.status]?.icon || "❓";
-    const statusClass = statusConfig[currentItem.status]?.class || "";
+    const statusClass = getStatusClass(current_item.status);
 
     container.innerHTML =
-      '<div style="margin-bottom:1rem;"><a href="/list" style="color:var(--accent);text-decoration:none;font-size:0.9rem;">← Back to List</a></div>' +
+      '<div style="margin-bottom:1rem;"><a href="/list" style="color:teal;text-decoration:none;font-size:0.9rem;">Back to List</a></div>' +
       '<div class="card">' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;"><div>' +
-      '<h1 style="margin-bottom:0.25rem;">' + currentItem.item + '</h1>' +
-      '<span class="badge badge-' + currentItem.priority.toLowerCase() + '">' + currentItem.priority + ' Priority</span>' +
-      '<span class="status-tag ' + statusClass + '" style="margin-left:0.35rem;">' + statusIcon + ' ' + currentItem.status + '</span>' +
+      '<h1 style="margin-bottom:0.25rem;">' + current_item.item + '</h1>' +
+      '<span class="badge badge-' + current_item.priority.toLowerCase() + '">' + current_item.priority + ' Priority</span>' +
+      '<span class="status-tag ' + statusClass + '" style="margin-left:0.35rem;">' + current_item.status + '</span>' +
       '</div></div>' +
       '<div class="detail-grid">' +
-      '<span class="detail-label">Category</span><span class="detail-value">' + currentItem.category + '</span>' +
-      '<span class="detail-label">Quantity</span><span class="detail-value">' + currentItem.quantity + '</span>' +
-      '<span class="detail-label">Price</span><span class="detail-value">$' + currentItem.price.toFixed(2) + '</span>' +
-      '<span class="detail-label">Store</span><span class="detail-value">' + (currentItem.store || "—") + '</span>' +
-      '<span class="detail-label">Added By</span><span class="detail-value">' + currentItem.addedBy + '</span>' +
-      '<span class="detail-label">Date Added</span><span class="detail-value">' + currentItem.dateAdded + '</span>' +
-      '<span class="detail-label">Notes</span><span class="detail-value">' + (currentItem.notes || "—") + '</span>' +
+      '<span class="detail-label">Category</span><span class="detail-value">' + current_item.category + '</span>' +
+      '<span class="detail-label">Quantity</span><span class="detail-value">' + current_item.quantity + '</span>' +
+      '<span class="detail-label">Price</span><span class="detail-value">$' + current_item.price.toFixed(2) + '</span>' +
+      '<span class="detail-label">Store</span><span class="detail-value">' + (current_item.store || "—") + '</span>' +
+      '<span class="detail-label">Added By</span><span class="detail-value">' + current_item.addedBy + '</span>' +
+      '<span class="detail-label">Date Added</span><span class="detail-value">' + current_item.dateAdded + '</span>' +
+      '<span class="detail-label">Notes</span><span class="detail-value">' + (current_item.notes || "—") + '</span>' +
       '</div>' +
       '<div class="btn-group" style="margin-top:1.25rem;">' +
-      '<button id="edit-btn" class="btn btn-secondary">✏️ Edit</button>' +
-      '<button id="delete-btn" class="btn btn-danger">🗑 Remove Item</button>' +
+      '<button id="edit-btn" class="btn btn-secondary">Edit</button>' +
+      '<button id="delete-btn" class="btn btn-danger">Remove Item</button>' +
       '</div></div>';
 
     document.getElementById("edit-btn").addEventListener("click", toggleEdit);
-
     document.getElementById("delete-btn").addEventListener("click", function () {
-      deleteItem(currentItem.id);
+      deleteItem(current_item.id);
     });
   }
 
+  // ================= EDIT =================
 
   function renderEdit() {
 
-    const statusIcon = statusConfig[currentItem.status]?.icon || "❓";
-    const statusClass = statusConfig[currentItem.status]?.class || "";
+    const statusClass = getStatusClass(current_item.status);
 
     container.innerHTML =
-      '<div style="margin-bottom:1rem;"><a href="/list" style="color:var(--accent);text-decoration:none;font-size:0.9rem;">← Back to List</a></div>' +
+      '<div style="margin-bottom:1rem;"><a href="/list" style="color:teal;text-decoration:none;font-size:0.9rem;">Back to List</a></div>' +
       '<form id="edit-form" class="card">' +
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;"><div>' +
-      '<h1>Edit ' + currentItem.item + '</h1>' +
-      '<span class="badge badge-' + currentItem.priority.toLowerCase() + '">' + currentItem.priority + ' Priority</span>' +
-      '<span class="status-tag ' + statusClass + '" style="margin-left:0.35rem;">' + statusIcon + ' ' + currentItem.status + '</span>' +
-      '</div></div>' +
+      '<h1>Edit ' + current_item.item + '</h1>' +
       '<div class="detail-grid">' +
       '<span class="detail-label">Category</span>' +
       '<select id="edit-category" required>' +
-      '<option value="Produce" ' + (currentItem.category === "Produce" ? "selected" : "") + '>Produce</option>' +
-      '<option value="Dairy" ' + (currentItem.category === "Dairy" ? "selected" : "") + '>Dairy</option>' +
-      '<option value="Meat" ' + (currentItem.category === "Meat" ? "selected" : "") + '>Meat</option>' +
-      '<option value="Bakery" ' + (currentItem.category === "Bakery" ? "selected" : "") + '>Bakery</option>' +
-      '<option value="Frozen" ' + (currentItem.category === "Frozen" ? "selected" : "") + '>Frozen</option>' +
-      '<option value="Beverages" ' + (currentItem.category === "Beverages" ? "selected" : "") + '>Beverages</option>' +
-      '<option value="Snacks" ' + (currentItem.category === "Snacks" ? "selected" : "") + '>Snacks</option>' +
-      '<option value="Household" ' + (currentItem.category === "Household" ? "selected" : "") + '>Household</option>' +
-      '<option value="Other" ' + (currentItem.category === "Other" ? "selected" : "") + '>Other</option>' +
+      '<option value="Produce" ' + (current_item.category === "Produce" ? "selected" : "") + '>Produce</option>' +
+      '<option value="Dairy" ' + (current_item.category === "Dairy" ? "selected" : "") + '>Dairy</option>' +
+      '<option value="Meat" ' + (current_item.category === "Meat" ? "selected" : "") + '>Meat</option>' +
+      '<option value="Bakery" ' + (current_item.category === "Bakery" ? "selected" : "") + '>Bakery</option>' +
+      '<option value="Frozen" ' + (current_item.category === "Frozen" ? "selected" : "") + '>Frozen</option>' +
+      '<option value="Beverages" ' + (current_item.category === "Beverages" ? "selected" : "") + '>Beverages</option>' +
+      '<option value="Snacks" ' + (current_item.category === "Snacks" ? "selected" : "") + '>Snacks</option>' +
+      '<option value="Household" ' + (current_item.category === "Household" ? "selected" : "") + '>Household</option>' +
+      '<option value="Other" ' + (current_item.category === "Other" ? "selected" : "") + '>Other</option>' +
       '</select>' +
       '<span class="detail-label">Quantity</span>' +
-      '<input id="edit-quantity" type="number" min="1" required value="' + currentItem.quantity + '">' +
+      '<input id="edit-quantity" type="number" min="1" required value="' + current_item.quantity + '">' +
       '<span class="detail-label">Price</span>' +
-      '<input type="number" id="edit-price" step="0.01" min="0.01" required value="' + currentItem.price + '">' +
+      '<input id="edit-price" type="number" step="0.01" min="0.01" required value="' + current_item.price + '">' +
       '<span class="detail-label">Store</span>' +
-      '<input id="edit-store" type="text" value="' + (currentItem.store || "") + '">' +
+      '<input id="edit-store" type="text" value="' + (current_item.store || "") + '">' +
       '<span class="detail-label">Added By</span>' +
-      '<input id="edit-addedBy" type="text" value="' + currentItem.addedBy + '">' +
+      '<input id="edit-addedBy" type="text" value="' + current_item.addedBy + '">' +
       '<span class="detail-label">Notes</span>' +
-      '<textarea id="edit-notes">' + (currentItem.notes || "") + '</textarea>' +
+      '<textarea id="edit-notes">' + (current_item.notes || "") + '</textarea>' +
       '</div>' +
       '<div class="btn-group" style="margin-top:1.25rem;">' +
-      '<button type="submit" class="btn btn-primary">💾 Save</button>' +
+      '<button type="submit" class="btn btn-primary">Save</button>' +
       '<button type="button" id="cancel-btn" class="btn btn-secondary">Cancel</button>' +
       '</div></form>';
 
     document.getElementById("edit-form").addEventListener("submit", function (e) {
       e.preventDefault();
-
-      if (!this.checkValidity()) {
-        this.reportValidity();
-        return;
-      }
-
       saveChanges();
     });
 
@@ -121,7 +118,6 @@ document.addEventListener("DOMContentLoaded", function () {
     else renderView();
   }
 
-
   function saveChanges() {
 
     const updatedData = {
@@ -133,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
       notes: document.getElementById("edit-notes").value.trim()
     };
 
-    fetch("/api/list/" + currentItem.id, {
+    fetch("/api/list/" + current_item.id, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedData)
@@ -143,21 +139,19 @@ document.addEventListener("DOMContentLoaded", function () {
         return res.json();
       })
       .then(function (updated) {
-        currentItem = updated;
+        current_item = updated;
         isEditing = false;
         renderView();
-        showToast("Item updated successfully");
       })
       .catch(function () {
-        showToast("Failed to update item");
+        alert("Failed to update item");
       });
   }
 
 });
 
-
 function showNotFound(c) {
-  c.innerHTML = '<div class="error-page"><h1>404</h1><p>Item not found.</p><a href="/list" class="btn btn-primary">← Back to List</a></div>';
+  c.innerHTML = '<div class="error-page"><h1>404</h1><p>Item not found.</p><a href="/list" class="btn btn-primary">Back to List</a></div>';
 }
 
 function deleteItem(id) {
@@ -165,9 +159,9 @@ function deleteItem(id) {
   fetch("/api/list/" + id, { method: "DELETE" })
     .then(function (res) {
       if (res.ok) window.location.href = "/list";
-      else showToast("Failed to remove item");
+      else alert("Failed to remove item");
     })
     .catch(function () {
-      showToast("Failed to remove item");
+      alert("Failed to remove item");
     });
 }

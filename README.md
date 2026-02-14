@@ -100,6 +100,18 @@ A full multi-page grocery list application with a Node.js/Express backend servin
 - Responsive design that works well on mobile and desktop
 - The analytics page provides real value — spending forecasts, category breakdowns, and a budget gauge
 
+### What We Learned
+
+- **Full Client–Server Workflow**: We gained hands-on experience building and connecting a frontend to a backend using REST principles, understanding how requests, responses, and status codes work together.
+- **Planning Before Coding**:Designing routes, data structure, and API responses before implementation reduced bugs and improved overall code clarity.
+- **QA Testing**: We understood as a team that there had be unit tests for every possible outcome of the application, as some underlying bugs were not easily recognizable just through development
+
+## Project Status
+
+> 🚧 This project represents the initial version of our application.  
+> It serves as a foundational implementation demonstrating REST API integration, client-server communication, and responsive design.  
+> Additional features and enhancements are planned for future iterations.
+
 ---
 
 _CPS 630 — Assignment 1 — Group 37_
