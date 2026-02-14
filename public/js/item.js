@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
       showNotFound(container);
     });
 
+
   function renderView() {
 
     const statusIcon = statusConfig[currentItem.status]?.icon || "❓";
@@ -46,10 +47,17 @@ document.addEventListener("DOMContentLoaded", function () {
       '<span class="detail-label">Notes</span><span class="detail-value">' + (currentItem.notes || "—") + '</span>' +
       '</div>' +
       '<div class="btn-group" style="margin-top:1.25rem;">' +
-      '<button class="btn btn-secondary" onclick="toggleEdit()">✏️ Edit</button>' +
-      '<button class="btn btn-danger" onclick="deleteItem(' + currentItem.id + ')">🗑 Remove Item</button>' +
+      '<button id="edit-btn" class="btn btn-secondary">✏️ Edit</button>' +
+      '<button id="delete-btn" class="btn btn-danger">🗑 Remove Item</button>' +
       '</div></div>';
+
+    document.getElementById("edit-btn").addEventListener("click", toggleEdit);
+
+    document.getElementById("delete-btn").addEventListener("click", function () {
+      deleteItem(currentItem.id);
+    });
   }
+
 
   function renderEdit() {
 
@@ -58,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     container.innerHTML =
       '<div style="margin-bottom:1rem;"><a href="/list" style="color:var(--accent);text-decoration:none;font-size:0.9rem;">← Back to List</a></div>' +
-      '<div class="card">' +
+      '<form id="edit-form" class="card">' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;"><div>' +
       '<h1>Edit ' + currentItem.item + '</h1>' +
       '<span class="badge badge-' + currentItem.priority.toLowerCase() + '">' + currentItem.priority + ' Priority</span>' +
@@ -66,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
       '</div></div>' +
       '<div class="detail-grid">' +
       '<span class="detail-label">Category</span>' +
-      '<select id="edit-category">' +
+      '<select id="edit-category" required>' +
       '<option value="Produce" ' + (currentItem.category === "Produce" ? "selected" : "") + '>Produce</option>' +
       '<option value="Dairy" ' + (currentItem.category === "Dairy" ? "selected" : "") + '>Dairy</option>' +
       '<option value="Meat" ' + (currentItem.category === "Meat" ? "selected" : "") + '>Meat</option>' +
@@ -77,25 +85,44 @@ document.addEventListener("DOMContentLoaded", function () {
       '<option value="Household" ' + (currentItem.category === "Household" ? "selected" : "") + '>Household</option>' +
       '<option value="Other" ' + (currentItem.category === "Other" ? "selected" : "") + '>Other</option>' +
       '</select>' +
-      '<span class="detail-label">Quantity</span>' + '<input id="edit-quantity" type="number" value="' + currentItem.quantity + '">' +
-      '<span class="detail-label">Price</span>' + '<input id="edit-price" type="number" value="' + currentItem.price + '">' +
-      '<span class="detail-label">Store</span>' + '<input id="edit-store" type="text" value="' + currentItem.store + '">' +
-      '<span class="detail-label">Added By</span>' + '<input id="edit-addedBy" type="text" value="' + currentItem.addedBy + '">' +
-      '<span class="detail-label">Notes</span>' + '<textarea id="edit-notes">' + (currentItem.notes || "") + '</textarea>' +
+      '<span class="detail-label">Quantity</span>' +
+      '<input id="edit-quantity" type="number" min="1" required value="' + currentItem.quantity + '">' +
+      '<span class="detail-label">Price</span>' +
+      '<input type="number" id="edit-price" step="0.01" min="0.01" required value="' + currentItem.price + '">' +
+      '<span class="detail-label">Store</span>' +
+      '<input id="edit-store" type="text" value="' + (currentItem.store || "") + '">' +
+      '<span class="detail-label">Added By</span>' +
+      '<input id="edit-addedBy" type="text" value="' + currentItem.addedBy + '">' +
+      '<span class="detail-label">Notes</span>' +
+      '<textarea id="edit-notes">' + (currentItem.notes || "") + '</textarea>' +
       '</div>' +
       '<div class="btn-group" style="margin-top:1.25rem;">' +
-      '<button class="btn btn-primary" onclick="saveChanges()">💾 Save</button>' +
-      '<button class="btn btn-secondary" onclick="toggleEdit()">Cancel</button>' +
-      '</div></div></div>';
+      '<button type="submit" class="btn btn-primary">💾 Save</button>' +
+      '<button type="button" id="cancel-btn" class="btn btn-secondary">Cancel</button>' +
+      '</div></form>';
+
+    document.getElementById("edit-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      if (!this.checkValidity()) {
+        this.reportValidity();
+        return;
+      }
+
+      saveChanges();
+    });
+
+    document.getElementById("cancel-btn").addEventListener("click", toggleEdit);
   }
 
-  window.toggleEdit = function () {
+  function toggleEdit() {
     isEditing = !isEditing;
     if (isEditing) renderEdit();
     else renderView();
-  };
+  }
 
-  window.saveChanges = function () {
+
+  function saveChanges() {
 
     const updatedData = {
       category: document.getElementById("edit-category").value,
@@ -124,9 +151,10 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch(function () {
         showToast("Failed to update item");
       });
-  };
+  }
 
 });
+
 
 function showNotFound(c) {
   c.innerHTML = '<div class="error-page"><h1>404</h1><p>Item not found.</p><a href="/list" class="btn btn-primary">← Back to List</a></div>';
