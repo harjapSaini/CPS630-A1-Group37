@@ -1,0 +1,460 @@
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: whitesmoke; 
+  color: black; 
+}
+
+.navbar { 
+  background: white; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  padding: 12px 24px; 
+  border-bottom: 1px solid lightgray; 
+  position: sticky; 
+  top: 0; 
+  z-index: 100; 
+}
+.nav-brand { 
+  font-size: 20px; 
+  font-weight: 700; 
+  color: teal; 
+  text-decoration: none; 
+}
+.nav-links { 
+  display: flex; 
+  gap: 24px; 
+}
+.nav-links a { 
+  text-decoration: none; 
+  color: gray; 
+  font-weight: 500; 
+  font-size: 14px; 
+}
+.nav-links a:hover { 
+  font-weight: bold;
+}
+.nav-links a.active { 
+  font-weight: bold;
+}
+
+.container { 
+  max-width: 720px; 
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px; 
+}
+
+h1 { 
+  font-size: 28px; 
+  font-weight: 700; 
+  padding-top: 20px;
+  padding-bottom: 20px;
+  color: teal;
+}
+h2 { 
+  font-size: 20px; 
+  font-weight: 600; 
+  padding-bottom: 10px;
+}
+
+.subtitle { 
+  color: gray; 
+  font-size: 15px; 
+  padding-bottom: 10px;
+}
+
+.nav-brand-icon {
+  font-size: 20px !important;
+  vertical-align: middle;
+  position: relative;
+  top: -3px;
+}
+
+.title-icon {
+  font-size: 25px !important;
+  margin-right: 6px;
+}
+
+.btn { 
+  display: inline-flex; 
+  align-items: center; 
+  border: none; 
+  padding: 9px 18px; 
+  font-size: 14px; 
+  text-decoration: none; 
+  font-weight: 500; 
+  cursor: pointer; 
+}
+.btn-primary { 
+  background: teal; 
+  color: white;
+}
+.btn-primary:hover { 
+  background: darkslategray; 
+}
+.btn-secondary { 
+  background: lightgray; 
+  color: black; 
+}
+.btn-secondary:hover { 
+  background: silver;
+}
+
+.btn-sm { 
+  padding: 6px 11px; 
+  font-size: 13px; 
+}
+.btn-group { 
+  display: flex; 
+  gap: 8px; 
+  flex-wrap: wrap; 
+}
+
+.card { 
+  background: white; 
+  border: 1px solid lightgray; 
+  border-radius: 8px; 
+  padding: 20px; 
+}
+
+.badge { 
+  display: inline-block; 
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 9px;
+  padding-right: 9px;
+  border-radius: 999px; 
+  font-size: 11px; 
+  font-weight: bold; 
+}
+.badge-high { 
+  background: lightpink; 
+  color: crimson; 
+}
+.badge-medium { 
+  background: wheat; 
+  color: chocolate; 
+}
+.badge-low { 
+  background: lightcyan; 
+  color: teal; 
+}
+
+.status-in-cart .item-name { 
+  text-decoration: line-through; 
+  color: gray; 
+}
+.status-purchased .item-name { 
+  text-decoration: line-through; 
+  color: gray; 
+}
+.status-tag { 
+  font-size: 12px; 
+  font-weight: 500; 
+  padding: 2px 7px; 
+  border-radius: 999px;
+}
+.status-needed { 
+  background: mistyrose;
+  color: darkred;
+}
+.status-in-cart { 
+  background: wheat; 
+  color: chocolate;
+}
+.status-purchased { 
+  background: lightcyan;
+  color: darkcyan;
+}
+.status-consumed {
+  background: lavender;
+  color: darkblue;
+}
+
+.grocery-list { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+}
+.grocery-item { 
+  display: flex; 
+  background: white; 
+  align-items: center; 
+  border: 1px solid lightgray; 
+  gap: 12px; 
+  padding-top: 14px;
+  padding-bottom: 14px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.grocery-item:hover { 
+  border-color: black; 
+}
+.grocery-item .item-info { 
+  flex: 1; 
+  min-width: 0; 
+}
+.grocery-item .item-name { 
+  font-weight: 600; 
+  font-size: 15px; 
+  color: teal; 
+  text-decoration: none; 
+  cursor: pointer; 
+}
+.grocery-item .item-name:hover { 
+  text-decoration: underline; 
+}
+.grocery-item .item-meta { 
+  font-size: 13px; 
+  color: gray; 
+  margin-top: 2px; 
+}
+.grocery-item .item-actions { 
+  display: flex; 
+  gap: 6px; 
+  align-items: center; 
+}
+
+.form-group { 
+  margin-bottom: 16px; 
+}
+.form-group label { 
+  display: block; 
+  font-weight: bold; 
+  margin-bottom: 5px; 
+  font-size: 14px; 
+  color: black; 
+}
+.form-group input { 
+  width: 100%; 
+  padding: 9px 12px; 
+  border: 1px solid lightgray; 
+  font-size: 14px; 
+  color: black; 
+  background: white; 
+}
+.form-group select { 
+  width: 100%; 
+  padding: 9px 12px; 
+  border: 1px solid lightgray; 
+  font-size: 14px; 
+  color: black; 
+  background: white; 
+}
+.form-group textarea { 
+  width: 100%; 
+  padding: 9px 12px; 
+  border: 1px solid lightgray; 
+  font-size: 14px; 
+  color: black; 
+  background: white; 
+}
+.form-group input:focus { 
+  outline: none; 
+  border-color: teal; 
+}
+.form-group select:focus { 
+  outline: none; 
+  border-color: teal; 
+}
+.form-group textarea:focus { 
+  outline: none; 
+  border-color: teal; 
+}
+.form-row { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 16px; 
+}
+
+.detail-grid { 
+  display: grid; 
+  grid-template-columns: auto 1fr; 
+  margin: 16px 0; 
+  gap: 8px 20px; 
+}
+.detail-label { 
+  font-weight: 500; 
+  color: gray; 
+  font-size: 14px; 
+}
+.detail-value { 
+  font-size: 15px; 
+}
+
+.summary-cards { 
+  display: grid; 
+  margin-bottom: 24px; 
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 12px; 
+}
+.summary-card { 
+  background: white; 
+  border: 1px solid lightgray; 
+  padding: 16px; 
+  text-align: center; 
+}
+.summary-card .card-icon { 
+  font-size: 24px; 
+  margin-bottom: 4px; 
+}
+.summary-card .card-value { 
+  font-size: 24px; 
+  font-weight: 700; 
+  color: black; 
+}
+.summary-card .card-label { 
+  font-size: 12px; 
+  color: gray; 
+}
+
+.budget-section { 
+  margin-bottom: 24px; 
+}
+.budget-input-row { 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  margin-bottom: 12px; 
+}
+.budget-input-row input { 
+  width: 130px; 
+  padding: 7px 10px; 
+  border: 1px solid lightgray; 
+  font-size: 14px; 
+}
+.budget-bar-container { 
+  background: gainsboro; 
+  height: 24px; 
+}
+.budget-bar { 
+  height: 100%; 
+}
+.budget-bar.green { 
+  background: green; 
+}
+.budget-bar.yellow { 
+  background: gold; 
+}
+.budget-bar.red {
+  background: crimson; 
+}
+.budget-message { 
+  margin-top: 6px; 
+  font-size: 14px; 
+  font-weight: 500; 
+}
+
+.chart-grid { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  margin-bottom: 24px; 
+  gap: 16px; 
+}
+.chart-card { 
+  background: white; 
+  border: 1px solid lightgray; 
+  padding: 16px; 
+}
+.chart-card h3 { 
+  color: black; 
+  font-size: 14px; 
+  font-weight: 600; 
+  margin-bottom: 12px; 
+}
+
+.error-page { 
+  text-align: center; 
+  padding: 48px 0; 
+}
+.error-page h1 { 
+  font-size: 64px; 
+  color: teal; 
+  margin-bottom: 8px; 
+}
+.error-page p { 
+  color: gray; 
+  margin-bottom: 24px; 
+}
+.empty-state { 
+  text-align: center; 
+  padding: 32px; 
+  color: gray; 
+}
+
+.hero { 
+  text-align: center; 
+  padding-top: 32px;
+  padding-bottom: 24px;
+}
+.hero h1 { 
+  font-size: 32px; 
+}
+.hero .subtitle { 
+  margin-bottom: 20px; 
+}
+.hero .btn-group { 
+  justify-content: center; 
+}
+
+.detail-grid input { 
+  width: 100%; 
+  padding: 9px 12px; 
+  border: 1px solid lightgray; 
+  font-size: 14px; 
+  color: black; 
+  background: white; 
+}
+.detail-grid textarea { 
+  width: 100%; 
+  padding: 9px 12px; 
+  border: 1px solid lightgray; 
+  font-size: 14px; 
+  color: black; 
+  background: white; 
+}
+.detail-grid select { 
+  width: 100%; 
+  padding: 9px 12px; 
+  border: 1px solid lightgray; 
+  font-size: 14px; 
+  color: black; 
+  background: white; 
+}
+
+.detail-grid input:focus { 
+  outline: none; 
+  border-color: teal; 
+}
+.detail-grid textarea:focus { 
+  outline: none; 
+  border-color: teal; 
+}
+.detail-grid select:focus { 
+  outline: none; 
+  border-color: teal; 
+}
+
+.footer { 
+  text-align: center; 
+  padding: 32px 0; 
+  color: gray; 
+  font-size: 13px; 
+}
+
+.toast { 
+  position: fixed; 
+  bottom: 24px; 
+  right: 24px; 
+  background: black; 
+  color: white;
+  padding: 12px 20px; 
+  font-size: 14px; 
+}
