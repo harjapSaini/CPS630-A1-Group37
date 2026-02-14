@@ -138,29 +138,49 @@ curl -X DELETE http://localhost:3000/api/items/1
 This submission includes:
 - ✅ Node.js/Express server (`server.js`)
 - ✅ JSON data file (`data/items.json`)
+     - Plans to transition form json to DB
 - ✅ 3 HTML pages (Home, Tasks, About) + 404 error page
 - ✅ REST API with GET, POST, DELETE endpoints
 - ✅ Static assets (CSS styling, client-side JavaScript)
 - ✅ This README documentation
-- ✅ Demo video (to be added)
+- ✅ Demo video 
 
 ### Challenges
 
 1. **Form Handling**: Ensuring proper validation on both client and server sides required careful consideration of edge cases (empty titles, special characters).
 
+   - Implementing the validation required handling multiple edge cases such as
+   - Ensuring there was consistency with frontend checks and backend
+     
 2. **State Management**: Without a frontend framework, managing the task list state after API operations required careful DOM manipulation and page refreshing strategies.
 
 3. **Error Handling**: Implementing consistent error responses across all API endpoints while providing helpful feedback to users.
 
+   - Designing standardized error responses across all endpoints required through API planning as a team, and we did so by implementing HTTP status codes and structured responses in       JSON
+
 ### Successes
 
-1. **Clean Code Organization**: The project follows a clear separation of concerns with distinct files for server logic, data, styles, and client-side scripts.
+1. **Clean Code Organization**: The project follows a clear separation of concerns with distinct files for server logic, data, styles, and client-side scripts, this also helps future development much easier
 
 2. **Responsive Design**: The application works well on both desktop and mobile devices thanks to CSS Grid and Flexbox layouts.
 
 3. **User Experience**: The notification system, smooth transitions, and intuitive interface create a polished user experience.
 
 4. **API Design**: The REST API follows best practices with proper HTTP methods, status codes, and JSON responses.
+   
+5. **Scalable Foundation**: The project right now has a good base with modularity which can allow for future/much improved changes such as database integration, migration of front-end framework (additional pages, etc).
+
+### What We Learned
+- **Full Client–Server Workflow**: We gained hands-on experience building and connecting a frontend to a backend using REST principles, understanding how requests, responses, and status codes work together.
+- **Planning Before Coding**:Designing routes, data structure, and API responses before implementation reduced bugs and improved overall code clarity.
+- **QA Testing**: We understood as a team that there had be unit tests for every possible outcome of the application, as some underlying bugs were not easily recognizable just through development
+
+## Project Status
+
+> 🚧 This project represents the initial version of our application.  
+> It serves as a foundational implementation demonstrating REST API integration, client-server communication, and responsive design.  
+> Additional features and enhancements are planned for future iterations.
+
 
 ---
 
