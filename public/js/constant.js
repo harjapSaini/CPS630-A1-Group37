@@ -2,19 +2,15 @@ const lifecycle = ["Needed", "In Cart", "Purchased", "Consumed"];
 
 const statusConfig = {
   "Needed": {
-    icon: "📝",
     class: "status-needed"
   },
   "In Cart": {
-    icon: "🛒",
     class: "status-in-cart"
   },
   "Purchased": {
-    icon: "💳",
     class: "status-purchased"
   },
   "Consumed": {
-    icon: "🍽️",
     class: "status-consumed"
   }
 };

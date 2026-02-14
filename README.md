@@ -1,4 +1,4 @@
-# ShopperPet 🛒
+# ShopperPet
 
 A grocery list web app we built for CPS 630 Assignment 1. It's made with **Node.js**, **Express**, and plain **HTML/CSS/JS** — no frameworks on the frontend.
 
@@ -112,6 +112,6 @@ We used **Git** and **GitHub** for version control throughout the project. Each 
 
 ## Project Status
 
-> 🚧 This is the first version of our app — just enough for A1.
+> This is the first version of our app — just enough for A1.
 > It covers the basics: REST API, client-server communication, and a responsive UI.
 > We'll be adding more stuff when A2 and A3 come around.
