@@ -1,25 +1,25 @@
 # ShopperPet 🛒
 
-A simple, minimalistic multi-page grocery list web application built with **Node.js** and **Express**.
+A simple, minimalistic multi-page grocery list web application built with **Node.js**, **Express**, **HTML**, **CSS**, and **JavaScript**.
 
 ## Overview
 
-ShopperPet helps you plan and manage your grocery shopping. Add items with details like price, quantity, priority, and store — then view, track, and analyze your spending all in one place.
+ShopperPet helps you plan and manage your grocery shopping. Add items with details like price, quantity, priority, and store. Then you can view, track, and analyze your spending all in one place.
 
 **Key Features:**
 
-- **Add Items** — Quick form with category, priority, price, and notes
-- **Shopping List** — View all items with status tracking (Pending → In Cart → Purchased)
+- **Add Items** — Quick form with category, priority, price, and notes for now.
+- **Shopping List** — View all items with status tracking (Needed → In Cart → Purchased → Consumed)
 - **Item Details** — Drill into any item for full information
-- **Analytics Dashboard** — Spending forecast, category breakdown, spender leaderboard, and budget gauge
-- **Download** — Export your list as a `.txt` file
+- **Item Edit** - Once drilled into the item, you can also edit item details in a form.
+- **Analytics Dashboard** — Spending forecast, category breakdown, spender leaderboard, and budget gauge. This only works for items that are currently in cart. May change in future. Ideal scenario is going to shopping and putting items in cart, but before going to cashier you can guess the cost using our app. Based on spender leader board, family members could even split the bill.
+- **Download** — Export your list as a `.txt` file. **[x]** means item in cart, **[]** means item in needed status.
 
 **Future Extensions:**
 
-- Database integration (MongoDB / PostgreSQL) to replace the JSON file
-- User authentication and per-user lists
-- React or Vue frontend for a richer SPA experience
-- Real-time updates via WebSockets
+- Database integration (MongoDB) as mentioned in class to replace the JSON file
+- User authentication and per-user lists (possibly)
+- React frontend for a richer experience and as well as re-usable componenets.
 
 ---
 
@@ -39,7 +39,7 @@ npm install
 npm start
 ```
 
-The app will be available at **http://localhost:3000**.
+The app will be available at **http://localhost:8080**.
 
 ### Pages
 
@@ -48,8 +48,9 @@ The app will be available at **http://localhost:3000**.
 | `/`          | Home          | Landing page with recent items          |
 | `/list`      | Shopping List | View all items, toggle status, delete   |
 | `/add`       | Add Item      | Form to add a new grocery item          |
-| `/item?id=X` | Item Details  | Detailed view of a single item          |
 | `/analytics` | Analytics     | Spending dashboard with charts & budget |
+| `/item?id=x` | Item Details  | Detailed view of a single item          |
+| `/item?id=x` | Edit Item Details     | Users can edit signle item's details |
 
 ### REST API
 
@@ -85,13 +86,14 @@ Each grocery item has the following fields:
 
 ### What Was Built
 
-A full multi-page grocery list application with a Node.js/Express backend serving a REST API and static HTML/CSS/JS frontend pages. Data is persisted in a JSON file (`grocery-data.json`) on the server.
+A full multi-page grocery list application with a Node.js/Express backend serving a REST API and static HTML/CSS/JS frontend pages. Data is persisted in a JSON file (`grocery-data.json`) on the server, for now.
 
 ### Challenges
 
 - Keeping the UI clean and minimal while supporting many item fields (priority, status, notes, price, etc.)
-- Implementing status toggling (Pending → In Cart → Purchased) with visual feedback (strikethrough, color badges)
+- Implementing status toggling (Needed → In Cart → Purchased → Consumed) with visual feedback (color badges)
 - Building a client-side analytics dashboard with Chart.js that computes meaningful insights from raw data
+- Making it modular.
 
 ### Successes
 
@@ -108,9 +110,9 @@ A full multi-page grocery list application with a Node.js/Express backend servin
 
 ## Project Status
 
-> 🚧 This project represents the initial version of our application.  
+> 🚧 This project represents the initial version of our application, just enough for A1.  
 > It serves as a foundational implementation demonstrating REST API integration, client-server communication, and responsive design.  
-> Additional features and enhancements are planned for future iterations.
+> Additional features and enhancements are planned for future iterations, when A2/A3 rolls out.
 
 ---
 
