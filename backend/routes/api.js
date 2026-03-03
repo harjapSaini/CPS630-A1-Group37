@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { readData, writeData, findItem, getNextId } = require("../data/dataService");
+const GroceryItem = require("../models/GroceryItem");
 
 // get all grocery items
-router.get("/list", function (req, res) {
+router.get("/list", async function (req, res) {
   try {
-    let data = readData();
+    let data = await GroceryItem.find().lean();
     res.json(data);
   } catch (err) {
     res.status(500).json({ error: "Failed to read data" });
@@ -13,21 +13,20 @@ router.get("/list", function (req, res) {
 });
 
 // get a single item by id
-router.get("/list/:id", function (req, res) {
+router.get("/list/:id", async function (req, res) {
   try {
-    let data = readData();
-    let idx = findItem(data, parseInt(req.params.id));
-    if (idx === -1) {
+    let item = await GroceryItem.findOne({ id: parseInt(req.params.id) });
+    if (!item) {
       return res.status(404).json({ error: "Item not found" });
     }
-    res.json(data[idx]);
+    res.json(item);
   } catch (err) {
     res.status(500).json({ error: "Failed to read data" });
   }
 });
 
 // add a new item
-router.post("/list", function (req, res) {
+router.post("/list", async function (req, res) {
   try {
     let b = req.body;
 
@@ -36,9 +35,12 @@ router.post("/list", function (req, res) {
       return res.status(400).json({ error: "Missing required fields: item, category, quantity" });
     }
 
-    let data = readData();
-    let newItem = {
-      id: getNextId(data),
+    // figure out the next available id
+    let last = await GroceryItem.findOne().sort({ id: -1 });
+    let nextId = last ? last.id + 1 : 1;
+
+    let newItem = new GroceryItem({
+      id: nextId,
       item: b.item.trim(),
       category: b.category,
       quantity: Number(b.quantity),
@@ -49,10 +51,9 @@ router.post("/list", function (req, res) {
       status: b.status || "Needed",
       notes: b.notes ? b.notes.trim() : "",
       dateAdded: new Date().toISOString().split("T")[0]
-    };
+    });
 
-    data.push(newItem);
-    writeData(data);
+    await newItem.save();
     res.status(201).json(newItem);
   } catch (err) {
     res.status(500).json({ error: "Failed to save item" });
@@ -60,44 +61,39 @@ router.post("/list", function (req, res) {
 });
 
 // update an item (only update the fields that were actually sent)
-router.patch("/list/:id", function (req, res) {
+router.patch("/list/:id", async function (req, res) {
   try {
-    let data = readData();
-    let idx = findItem(data, parseInt(req.params.id));
-    if (idx === -1) {
+    let item = await GroceryItem.findOne({ id: parseInt(req.params.id) });
+    if (!item) {
       return res.status(404).json({ error: "Item not found" });
     }
 
     // check each field individually and update if it was sent
-    if (req.body.status !== undefined) data[idx].status = req.body.status;
-    if (req.body.priority !== undefined) data[idx].priority = req.body.priority;
-    if (req.body.notes !== undefined) data[idx].notes = req.body.notes;
-    if (req.body.quantity !== undefined) data[idx].quantity = req.body.quantity;
-    if (req.body.price !== undefined) data[idx].price = req.body.price;
-    if (req.body.store !== undefined) data[idx].store = req.body.store;
-    if (req.body.addedBy !== undefined) data[idx].addedBy = req.body.addedBy;
-    if (req.body.category !== undefined) data[idx].category = req.body.category;
+    if (req.body.status !== undefined) item.status = req.body.status;
+    if (req.body.priority !== undefined) item.priority = req.body.priority;
+    if (req.body.notes !== undefined) item.notes = req.body.notes;
+    if (req.body.quantity !== undefined) item.quantity = req.body.quantity;
+    if (req.body.price !== undefined) item.price = req.body.price;
+    if (req.body.store !== undefined) item.store = req.body.store;
+    if (req.body.addedBy !== undefined) item.addedBy = req.body.addedBy;
+    if (req.body.category !== undefined) item.category = req.body.category;
 
-    writeData(data);
-    res.json(data[idx]);
+    await item.save();
+    res.json(item);
   } catch (err) {
     res.status(500).json({ error: "Failed to update item" });
   }
 });
 
 // delete an item
-router.delete("/list/:id", function (req, res) {
+router.delete("/list/:id", async function (req, res) {
   try {
-    let data = readData();
-    let idx = findItem(data, parseInt(req.params.id));
-    if (idx === -1) {
+    let item = await GroceryItem.findOneAndDelete({ id: parseInt(req.params.id) });
+    if (!item) {
       return res.status(404).json({ error: "Item not found" });
     }
 
-    // remove the item and save
-    let removed = data.splice(idx, 1)[0];
-    writeData(data);
-    res.json({ message: "Item removed", item: removed });
+    res.json({ message: "Item removed", item: item });
   } catch (err) {
     res.status(500).json({ error: "Failed to delete item" });
   }

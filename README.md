@@ -1,6 +1,6 @@
 # ShopperPet
 
-A grocery list web app we built for CPS 630 Assignment 1. It's made with **Node.js**, **Express**, and plain **HTML/CSS/JS** — no frameworks on the frontend.
+A grocery list web app built for CPS 630 Assignment 1. Made with **Node.js**, **Express**, **MongoDB + Mongoose** on the backend and **React + Vite** on the frontend.
 
 ## What is it?
 
@@ -8,49 +8,100 @@ ShopperPet is basically a grocery list manager. You can add grocery items, track
 
 Here's what you can do with it:
 
-- **Add Items** — theres a form where you fill in category, priority, price, notes, etc.
-- **Shopping List** — see all your items, change their status (Needed → In Cart → Purchased → Consumed), or delete them
-- **Item Details** — click on any item to see all its info
+- **Add Items** - theres a form where you fill in category, priority, price, notes, etc.
+- **Shopping List** - see all your items, change their status (Needed -> In Cart -> Purchased -> Consumed), or delete them
+- **Item Details** - click on any item to see all its info
 - **Edit Items** - you can also edit item details from the detail page
-- **Analytics** — a dashboard that shows spending breakdowns, category charts, and a budget tracker. Right now it only looks at items that are "In Cart". The idea is you'd use it while shopping to estimate how much you'll spend before going to the cashier. Theres also a spender leaderboard so family members could split the bill
-- **Download List** — lets you export your list as a `.txt` file. **[x]** means its in cart, **[]** means its still needed
+- **Analytics** - a dashboard that shows spending breakdowns, category charts, and a budget tracker. Right now it only looks at items that are "In Cart". The idea is you'd use it while shopping to estimate how much you'll spend before going to the cashier. Theres also a spender leaderboard so family members could split the bill
+- **Download List** - lets you export your list as a `.txt` file. **[x]** means its in cart, **[]** means its still needed
 
-**Stuff we want to add later:**
+---
 
-- Hook it up to MongoDB instead of using a JSON file (prof mentioned this for future assignments)
-- Maybe add user login so different people can have their own lists
-- Possibly redo the frontend in React so we can reuse components
+## Tech Stack
+
+| Layer    | Technology                      |
+| -------- | ------------------------------- |
+| Backend  | Node.js + Express               |
+| Database | MongoDB + Mongoose              |
+| Frontend | React + Vite + React Router     |
+| Charts   | Chart.js + react-chartjs-2      |
+| Styling  | Vanilla CSS (no CSS frameworks) |
+
+---
+
+## Project Structure
+
+```
+CPS630-A1-Group37/
+|-- backend/
+|   |-- server.js            # Express server + MongoDB connection
+|   |-- routes/
+|   |   |-- api.js           # REST API routes (CRUD)
+|   |-- models/
+|   |   |-- GroceryItem.js   # Mongoose schema with validation
+|   |   |-- seed.js          # Seeds test data on first startup
+|   |-- package.json
+|-- frontend/
+|   |-- index.html           # React entry point
+|   |-- vite.config.js       # Vite config with API proxy
+|   |-- src/
+|   |   |-- main.jsx         # React root
+|   |   |-- App.jsx          # Router with 5 routes
+|   |   |-- style.css        # All styles
+|   |   |-- constants.js     # Shared constants
+|   |   |-- components/
+|   |   |   |-- Navbar.jsx   # Shared navigation bar
+|   |   |   |-- Toast.jsx    # Toast notifications
+|   |   |-- pages/
+|   |       |-- Home.jsx     # Landing page + recent items
+|   |       |-- List.jsx     # Shopping list (full CRUD)
+|   |       |-- Add.jsx      # Add item form
+|   |       |-- Item.jsx     # Item detail + edit
+|   |       |-- Analytics.jsx # Charts + budget gauge
+|   |-- public/
+|       |-- assets/          # Favicons
+|   |-- package.json
+|-- .gitignore
+|-- README.md
+```
 
 ---
 
 ## How to Run It
 
-You need [Node.js](https://nodejs.org/) (v16+).
+You need [Node.js](https://nodejs.org/) (v16+) and [MongoDB](https://www.mongodb.com/) running locally.
+
+### Backend (Express + MongoDB - port 8080)
 
 ```bash
-# install the packages
+cd backend
 npm install
-
-# start it up
-npm start
+npm run start
 ```
 
-Then go to **http://localhost:8080** in your browser.
+This connects to MongoDB at `mongodb://localhost:27017/shopperpet`, seeds the database with test data if its empty, and starts the API server at **http://localhost:8080**.
+
+### Frontend (React + Vite - port 5173)
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+This starts the Vite dev server at **http://localhost:5173**. The Vite proxy forwards all `/api` requests to the backend on port 8080.
 
 ### Pages
 
-| Route        | Page          | What it does                          |
-| ------------ | ------------- | ------------------------------------- |
-| `/`          | Home          | Landing page, shows some recent items |
-| `/list`      | Shopping List | All your items, change status, delete |
-| `/add`       | Add Item      | Form to add a new grocery item        |
-| `/analytics` | Analytics     | Charts and budget tracking            |
-| `/item?id=x` | Item Details  | See all info for one item             |
-| `/item?id=x` | Edit Item     | Edit that item's details              |
+| Route        | Page          | What it does                       |
+| ------------ | ------------- | ---------------------------------- |
+| `/`          | Home          | Landing page, shows 3 recent items |
+| `/list`      | Shopping List | All items, change status, delete   |
+| `/add`       | Add Item      | Form to add a new grocery item     |
+| `/item/:id`  | Item Details  | View/edit/delete a single item     |
+| `/analytics` | Analytics     | Charts and budget tracking         |
 
-### API Endpoints
-
-We built a REST API that the frontend talks to using fetch. Here are the routes:
+### REST API
 
 | Method   | Endpoint        | What it does                  | Status Codes |
 | -------- | --------------- | ----------------------------- | ------------ |
@@ -60,23 +111,27 @@ We built a REST API that the frontend talks to using fetch. Here are the routes:
 | `PATCH`  | `/api/list/:id` | Updates an item (like status) | 200 / 404    |
 | `DELETE` | `/api/list/:id` | Deletes an item               | 200 / 404    |
 
-### Data Model
+### Database Schema (Mongoose)
 
-Each grocery item looks like this:
+Each grocery item is stored in MongoDB with the following fields and validation:
 
-| Field       | Type   | Description                                |
-| ----------- | ------ | ------------------------------------------ |
-| `id`        | Number | Auto-assigned unique ID                    |
-| `item`      | String | Item name                                  |
-| `category`  | String | Produce, Dairy, Meat, Bakery, Frozen, etc. |
-| `quantity`  | Number | How many to buy                            |
-| `price`     | Number | Estimated price ($)                        |
-| `store`     | String | Store name                                 |
-| `addedBy`   | String | Who added the item                         |
-| `priority`  | String | High / Medium / Low                        |
-| `status`    | String | Needed / In Cart / Purchased / Consumed    |
-| `notes`     | String | Optional notes                             |
-| `dateAdded` | String | ISO date, auto-set when item is created    |
+| Field       | Type   | Validation                                      |
+| ----------- | ------ | ----------------------------------------------- |
+| `id`        | Number | Required, unique, min 1                         |
+| `item`      | String | Required, trimmed, 1-100 chars                  |
+| `category`  | String | Required, must be one of 9 allowed categories   |
+| `quantity`  | Number | Required, whole number, min 1                   |
+| `price`     | Number | Min 0, max 99999                                |
+| `store`     | String | Trimmed, max 100 chars                          |
+| `addedBy`   | String | Trimmed, max 50 chars, defaults to "Anonymous"  |
+| `priority`  | String | Must be Low / Medium / High                     |
+| `status`    | String | Must be Needed / In Cart / Purchased / Consumed |
+| `notes`     | String | Trimmed, max 500 chars                          |
+| `dateAdded` | String | Must match YYYY-MM-DD format                    |
+
+### Seed Function
+
+On startup, the backend checks if the `groceryitems` collection is empty. If it is, it inserts 8 test items automatically. If the database already has data, it skips seeding. This is handled by `models/seed.js`.
 
 ---
 
@@ -84,34 +139,36 @@ Each grocery item looks like this:
 
 ### What we built
 
-We made a full multi-page grocery app with a Node/Express backend that serves a REST API, and the frontend is just static HTML/CSS/JS files. All the data gets saved to a JSON file (`grocery-data.json`) on the server for now — we'll probably switch to a database later.
+We made a full multi-page grocery app with a Node/Express backend that serves a REST API, and the frontend is just static HTML/CSS/JS files. The project is split into a `backend/` and `frontend/` monorepo layout.
 
 ### Challenges we ran into
 
 - Trying to keep the UI looking clean when theres so many fields per item (priority, status, notes, price, store, etc.) was harder than we thought
-- Getting the status toggling to work smoothly (Needed → In Cart → Purchased → Consumed) with the colored badges took some trial and error
-- The analytics page was tricky — we used Chart.js and had to figure out how to compute the stats from the raw data on the client side
-- Keeping things modular so we didn't end up with one giant file
+- Getting the status toggling to work smoothly (Needed -> In Cart -> Purchased -> Consumed) with the colored badges took some trial and error
+- The analytics page was tricky - we used Chart.js and had to figure out how to compute the stats from the raw data on the client side
+- Migrating from plain HTML/JS to React while keeping all the same functionality
+- Setting up the Vite proxy so the React frontend could talk to the Express API during development
 
 ### What went well
 
-- We kept the server and client code pretty separate which made things easier to debug
-- Each page has its own JS file so its not all jammed into one script
-- The design works on mobile too which is nice
-- Analytics page actually turned out to be useful — the spending forecast and budget gauge are pretty cool
+- The monorepo structure keeps backend and frontend cleanly separated
+- React components make the code much more reusable - the Navbar and Toast are shared across all pages
+- The Mongoose schema with validation catches bad data before it hits the database
+- Analytics page actually turned out to be useful - the spending forecast and budget gauge are pretty cool
 
 ### What we learned
 
-- **Client-Server stuff**: Got hands-on experience connecting a frontend to a backend with REST. Understanding how requests, responses, and status codes fit together was really helpful.
+- **Full-Stack Development**: Got hands-on experience connecting a React frontend to an Express backend with REST and MongoDB.
+- **React + Vite**: Learned how to build a multi-view SPA with React Router and how Vite's proxy simplifies API calls during development.
+- **MongoDB + Mongoose**: Learned about schema design, validation, and how Mongoose makes working with MongoDB much easier.
 - **Planning first**: We designed the routes, data structure, and API responses before jumping into code. Definitely saved us time and headaches down the road.
-- **Testing matters**: We realized pretty quickly that we needed tests for edge cases. Some bugs were not obvious at all just from using the app manually.
 
 ### Version Control
 
-We used **Git** and **GitHub** for version control throughout the project. Each team member worked on their own branch and we merged changes through pull requests. This helped us avoid stepping on each other's code and made it easy to roll back if something broke. We also used commits to track progress and keep a history of what was changed and why.
+We used **Git** and **GitHub** for version control throughout the project. Each team member worked on their own branch and we merged changes through pull requests. This helped us avoid stepping on each other's code and made it easy to roll back if something broke.
 
 ## Project Status
 
-> This is the first version of our app — just enough for A1.
-> It covers the basics: REST API, client-server communication, and a responsive UI.
-> We'll be adding more stuff when A2 and A3 come around.
+> This is the second version of our app for A2, built on top of A1.
+> It covers the basics: React+Vite frontend, Express+MongoDB backend, REST API, and a responsive UI.
+> We'll be adding more stuff when A3 comes around.
