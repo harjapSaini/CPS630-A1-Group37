@@ -1,6 +1,6 @@
 # ShopperPet
 
-A grocery list web app we built for CPS 630 Assignment 1. It's made with **Node.js**, **Express**, and plain **HTML/CSS/JS** — no frameworks on the frontend.
+A grocery list web app we built for CPS 630 Assignment 1. It's made with **Node.js**, **Express**, and plain **HTML/CSS/JS** - no frameworks on the frontend.
 
 ## What is it?
 
@@ -8,12 +8,12 @@ ShopperPet is basically a grocery list manager. You can add grocery items, track
 
 Here's what you can do with it:
 
-- **Add Items** — theres a form where you fill in category, priority, price, notes, etc.
-- **Shopping List** — see all your items, change their status (Needed → In Cart → Purchased → Consumed), or delete them
-- **Item Details** — click on any item to see all its info
+- **Add Items** - theres a form where you fill in category, priority, price, notes, etc.
+- **Shopping List** - see all your items, change their status (Needed → In Cart → Purchased → Consumed), or delete them
+- **Item Details** - click on any item to see all its info
 - **Edit Items** - you can also edit item details from the detail page
-- **Analytics** — a dashboard that shows spending breakdowns, category charts, and a budget tracker. Right now it only looks at items that are "In Cart". The idea is you'd use it while shopping to estimate how much you'll spend before going to the cashier. Theres also a spender leaderboard so family members could split the bill
-- **Download List** — lets you export your list as a `.txt` file. **[x]** means its in cart, **[]** means its still needed
+- **Analytics** - a dashboard that shows spending breakdowns, category charts, and a budget tracker. Right now it only looks at items that are "In Cart". The idea is you'd use it while shopping to estimate how much you'll spend before going to the cashier. Theres also a spender leaderboard so family members could split the bill
+- **Download List** - lets you export your list as a `.txt` file. **[x]** means its in cart, **[]** means its still needed
 
 **Stuff we want to add later:**
 
@@ -27,15 +27,25 @@ Here's what you can do with it:
 
 You need [Node.js](https://nodejs.org/) (v16+).
 
-```bash
-# install the packages
-npm install
+### Backend (Express server - port 8080)
 
-# start it up
+```bash
+cd backend
+npm install
 npm start
 ```
 
-Then go to **http://localhost:8080** in your browser.
+Then go to **http://localhost:8080** in your browser. This runs the full app - the Express server serves both the API and the frontend static files.
+
+### Frontend (Vite dev server - port 5173)
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+This starts the Vite dev server at **http://localhost:5173**. Right now its just a scaffold for future development - the actual app pages are still served by the backend.
 
 ### Pages
 
@@ -84,13 +94,13 @@ Each grocery item looks like this:
 
 ### What we built
 
-We made a full multi-page grocery app with a Node/Express backend that serves a REST API, and the frontend is just static HTML/CSS/JS files. All the data gets saved to a JSON file (`grocery-data.json`) on the server for now — we'll probably switch to a database later.
+We made a full multi-page grocery app with a Node/Express backend that serves a REST API, and the frontend is just static HTML/CSS/JS files. The project is split into a `backend/` and `frontend/` monorepo layout. All the data gets saved to a JSON file (`grocery-data.json`) on the server for now - we'll probably switch to a database later.
 
 ### Challenges we ran into
 
 - Trying to keep the UI looking clean when theres so many fields per item (priority, status, notes, price, store, etc.) was harder than we thought
 - Getting the status toggling to work smoothly (Needed → In Cart → Purchased → Consumed) with the colored badges took some trial and error
-- The analytics page was tricky — we used Chart.js and had to figure out how to compute the stats from the raw data on the client side
+- The analytics page was tricky - we used Chart.js and had to figure out how to compute the stats from the raw data on the client side
 - Keeping things modular so we didn't end up with one giant file
 
 ### What went well
@@ -98,7 +108,7 @@ We made a full multi-page grocery app with a Node/Express backend that serves a 
 - We kept the server and client code pretty separate which made things easier to debug
 - Each page has its own JS file so its not all jammed into one script
 - The design works on mobile too which is nice
-- Analytics page actually turned out to be useful — the spending forecast and budget gauge are pretty cool
+- Analytics page actually turned out to be useful - the spending forecast and budget gauge are pretty cool
 
 ### What we learned
 
@@ -112,6 +122,6 @@ We used **Git** and **GitHub** for version control throughout the project. Each 
 
 ## Project Status
 
-> This is the first version of our app — just enough for A1.
+> This is the first version of our app - just enough for A1.
 > It covers the basics: REST API, client-server communication, and a responsive UI.
 > We'll be adding more stuff when A2 and A3 come around.

@@ -8,7 +8,7 @@
     "store": "Walmart",
     "addedBy": "Mom",
     "priority": "Medium",
-    "status": "Purchased",
+    "status": "Consumed",
     "notes": "Boneless, skinless",
     "dateAdded": "2026-02-11"
   },
@@ -34,7 +34,7 @@
     "store": "Costco",
     "addedBy": "Kids",
     "priority": "Low",
-    "status": "Purchased",
+    "status": "In Cart",
     "notes": "Pepperoni chicken preferred",
     "dateAdded": "2026-02-11"
   },
@@ -47,7 +47,7 @@
     "store": "Walmart",
     "addedBy": "Dad",
     "priority": "Medium",
-    "status": "Purchased",
+    "status": "In Cart",
     "notes": "test",
     "dateAdded": "2026-02-12"
   },
@@ -86,7 +86,7 @@
     "store": "Tesco",
     "addedBy": "Mom",
     "priority": "Medium",
-    "status": "Purchased",
+    "status": "In Cart",
     "notes": "",
     "dateAdded": "2026-02-13"
   },
@@ -99,7 +99,7 @@
     "store": "Best Buy",
     "addedBy": "Son",
     "priority": "Medium",
-    "status": "Purchased",
+    "status": "Consumed",
     "notes": "I really need it",
     "dateAdded": "2026-02-14"
   }
