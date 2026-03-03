@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const mongoose = require("mongoose");
+const { seedDatabase } = require("./models/seed");
 
 const app = express();
 const PORT = 8080; //Used in lecture by prof
@@ -20,6 +22,17 @@ app.use(function (req, res) {
   res.status(404).json({ error: "API endpoint not found" });
 });
 
-app.listen(PORT, function () {
-  console.log("ShopperPet running at http://localhost:" + PORT);
-});
+// connect to mongodb then start the server
+mongoose.connect("mongodb://localhost:27017/shopperpet")
+  .then(function () {
+    console.log("Connected to MongoDB");
+    return seedDatabase();
+  })
+  .then(function () {
+    app.listen(PORT, function () {
+      console.log("ShopperPet running at http://localhost:" + PORT);
+    });
+  })
+  .catch(function (err) {
+    console.log("Failed to connect to MongoDB:", err.message);
+  });
