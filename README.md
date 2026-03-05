@@ -120,10 +120,10 @@ This starts the Vite dev server at **http://localhost:5173**. The Vite proxy for
 
 #### Users
 
-| Method | Endpoint     | What it does              | Status Codes |
-| ------ | ------------ | ------------------------- | ------------ |
-| `GET`  | `/api/users` | Returns all users         | 200          |
-| `POST` | `/api/users` | Creates a new user        | 201 / 400    |
+| Method   | Endpoint        | What it does                  | Status Codes |
+| -------- | --------------- | ----------------------------- | ------------ |
+| `GET`    | `/api/users`    | Returns all users             | 200          |
+| `POST`   | `/api/users`    | Creates a new user            | 201 / 400    |
 
 ### Database Schema (Mongoose)
 
@@ -147,13 +147,13 @@ Each grocery item is stored in MongoDB with the following fields and validation:
 
 #### User
 
-Household members are stored with the following fields:
+Household members are stored with the following fields and validation:
 
-| Field       | Type   | Validation                       |
-| ----------- | ------ | -------------------------------- |
-| `name`      | String | Required, trimmed                |
-| `age`       | Number | Required, min 1, max 120         |
-| `createdAt` | Date   | Auto-set to current date/time    |
+| Field       | Type   | Validation                                      |
+| ----------- | ------ | ----------------------------------------------- |
+| `name`      | String | Required, trimmed                               |
+| `age`       | Number | Required, min 1, max 120                        |
+| `createdAt` | Date   | Auto-set to current date/time                   |
 
 ### Seed Function
 
