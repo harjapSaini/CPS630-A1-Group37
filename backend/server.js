@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const { seedDatabase } = require("./models/seed");
+const { seedUsers } = require("./models/userseed");
 
 const app = express();
 const PORT = 8080; //Used in lecture by prof
@@ -27,6 +28,9 @@ mongoose.connect("mongodb://localhost:27017/shopperpet")
   .then(function () {
     console.log("Connected to MongoDB");
     return seedDatabase();
+  })
+  .then(function () {
+    return seedUsers();   
   })
   .then(function () {
     app.listen(PORT, function () {

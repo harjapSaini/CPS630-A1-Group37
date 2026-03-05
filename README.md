@@ -12,6 +12,7 @@ Here's what you can do with it:
 - **Shopping List** - see all your items, change their status (Needed -> In Cart -> Purchased -> Consumed), or delete them
 - **Item Details** - click on any item to see all its info
 - **Edit Items** - you can also edit item details from the detail page
+- **Add Users** - a page to register household members by name and age
 - **Analytics** - a dashboard that shows spending breakdowns, category charts, and a budget tracker. Right now it only looks at items that are "In Cart". The idea is you'd use it while shopping to estimate how much you'll spend before going to the cashier. Theres also a spender leaderboard so family members could split the bill
 - **Download List** - lets you export your list as a `.txt` file. **[x]** means its in cart, **[]** means its still needed
 
@@ -38,8 +39,10 @@ CPS630-A1-Group37/
 |   |-- routes/
 |   |   |-- api.js           # REST API routes (CRUD)
 |   |-- models/
-|   |   |-- GroceryItem.js   # Mongoose schema with validation
-|   |   |-- seed.js          # Seeds test data on first startup
+|   |   |-- GroceryItem.js   # Mongoose schema for grocery items
+|   |   |-- User.js          # Mongoose schema for household users
+|   |   |-- seed.js          # Seeds test grocery item data on first startup
+|   |   |-- userseed.js      # Seeds test user data on first startup
 |   |-- package.json
 |-- frontend/
 |   |-- index.html           # React entry point
@@ -56,6 +59,7 @@ CPS630-A1-Group37/
 |   |       |-- Home.jsx     # Landing page + recent items
 |   |       |-- List.jsx     # Shopping list (full CRUD)
 |   |       |-- Add.jsx      # Add item form
+|   |       |-- AddUser.jsx  # Add user form
 |   |       |-- Item.jsx     # Item detail + edit
 |   |       |-- Analytics.jsx # Charts + budget gauge
 |   |-- public/
@@ -93,15 +97,18 @@ This starts the Vite dev server at **http://localhost:5173**. The Vite proxy for
 
 ### Pages
 
-| Route        | Page          | What it does                       |
-| ------------ | ------------- | ---------------------------------- |
-| `/`          | Home          | Landing page, shows 3 recent items |
-| `/list`      | Shopping List | All items, change status, delete   |
-| `/add`       | Add Item      | Form to add a new grocery item     |
-| `/item/:id`  | Item Details  | View/edit/delete a single item     |
-| `/analytics` | Analytics     | Charts and budget tracking         |
+| Route        | Page          | What it does                           |
+| ------------ | ------------- | ----------------------------------     |
+| `/`          | Home          | Landing page, shows 3 recent items     |
+| `/list`      | Shopping List | All items, change status, delete       |
+| `/add`       | Add Item      | Form to add a new grocery item         |
+| `/add-user`  | Add User      | Form to register a new  user           |
+| `/item/:id`  | Item Details  | View/edit/delete a single item         |
+| `/analytics` | Analytics     | Charts and budget tracking             |
 
 ### REST API
+
+#### Grocery Items
 
 | Method   | Endpoint        | What it does                  | Status Codes |
 | -------- | --------------- | ----------------------------- | ------------ |
@@ -111,7 +118,16 @@ This starts the Vite dev server at **http://localhost:5173**. The Vite proxy for
 | `PATCH`  | `/api/list/:id` | Updates an item (like status) | 200 / 404    |
 | `DELETE` | `/api/list/:id` | Deletes an item               | 200 / 404    |
 
+#### Users
+
+| Method   | Endpoint        | What it does                  | Status Codes |
+| -------- | --------------- | ----------------------------- | ------------ |
+| `GET`    | `/api/users`    | Returns all users             | 200          |
+| `POST`   | `/api/users`    | Creates a new user            | 201 / 400    |
+
 ### Database Schema (Mongoose)
+
+#### GroceryItem
 
 Each grocery item is stored in MongoDB with the following fields and validation:
 
@@ -128,6 +144,16 @@ Each grocery item is stored in MongoDB with the following fields and validation:
 | `status`    | String | Must be Needed / In Cart / Purchased / Consumed |
 | `notes`     | String | Trimmed, max 500 chars                          |
 | `dateAdded` | String | Must match YYYY-MM-DD format                    |
+
+#### User
+
+Household members are stored with the following fields and validation:
+
+| Field       | Type   | Validation                                      |
+| ----------- | ------ | ----------------------------------------------- |
+| `name`      | String | Required, trimmed                               |
+| `age`       | Number | Required, min 1, max 120                        |
+| `createdAt` | Date   | Auto-set to current date/time                   |
 
 ### Seed Function
 
