@@ -137,7 +137,7 @@ function List() {
                 <div className="item-meta">{item.category} · Qty: {item.quantity} · ${item.price.toFixed(2)}{storeText}</div>
               </div>
               <span className={"badge badge-" + item.priority.toLowerCase()}>{item.priority}</span>
-              <span className={"status-tag " + statusClass} onClick={function () { toggleStatus(item.id, nextStatus); }} style={{ cursor: "pointer" }}>{item.status}</span>
+              <span className={"status-tag " + statusClass}>{item.status}</span>
               <div className="item-actions">
                 <button className="btn btn-secondary btn-sm" onClick={function () { toggleStatus(item.id, nextStatus); }}>{nextStatus}</button>
                 <button className="btn btn-danger btn-sm" onClick={function () { deleteItem(item.id); }}>Remove</button>
