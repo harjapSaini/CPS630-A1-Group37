@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { lifecycle, categories } from "../constants";
 
@@ -16,6 +16,27 @@ function Add() {
   let [addedBy, setAddedBy] = useState("");
   let [priority, setPriority] = useState("Medium");
   let [notes, setNotes] = useState("");
+  let [users, setUsers] = useState([]);
+
+  useEffect(function () {
+  fetch("/api/users")
+    .then(function (res) 
+    { 
+      return res.json(); 
+    })
+    .then(function (data) 
+    {
+      setUsers(data);
+
+      if (!addedBy && data.length > 0) { // Takes first user if nothing is selected
+        setAddedBy(data[0].name);
+      }
+    })
+    .catch(function () 
+    {
+      console.log("Failed to load users");
+    });
+  }, []);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -95,8 +116,21 @@ function Add() {
           </div>
           <div className="form-group">
             <label htmlFor="addedBy">Added By</label>
-            <input type="text" id="addedBy" placeholder="e.g. Mom" value={addedBy} onChange={function (e) { setAddedBy(e.target.value); }} />
-          </div>
+           <select
+            id="addedBy"
+            value={addedBy}
+            onChange={function (e) { setAddedBy(e.target.value); }}
+          >
+            <option value="">Select...</option>
+            {users.map(function (u) {
+              return (
+                <option key={u._id} value={u.name}>
+                  {u.name} ({u.age})
+                </option>
+              );
+            })}
+          </select>
+        </div>
         </div>
         <div className="form-group">
           <label htmlFor="priority">Priority</label>

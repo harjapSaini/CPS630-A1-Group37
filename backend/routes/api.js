@@ -1,6 +1,39 @@
 const express = require("express");
 const router = express.Router();
 const GroceryItem = require("../models/GroceryItem");
+const User = require("../models/User");
+
+// Get all users
+router.get("/users", async function (req, res) {
+  try {
+    let users = await User.find().lean();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to read users" });
+  }
+});
+
+router.post("/users", async function (req, res) {
+  try {
+    let b = req.body;
+
+    if (!b.name || !b.age) {
+      return res.status(400).json({ error: "Missing required fields: name, age" });
+    }
+
+    let newUser = new User({
+      name: b.name.trim(),
+      age: Number(b.age)
+    });
+
+    await newUser.save();
+
+    res.status(201).json(newUser);
+
+  } catch (err) {
+    res.status(500).json({ error: "Failed to create user" });
+  }
+});
 
 // get all grocery items
 router.get("/list", async function (req, res) {
