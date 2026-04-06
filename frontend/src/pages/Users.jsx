@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import defaultAvatar from "../../public/assets/default-avatar.png";
+import defaultAvatar from "/src/assets/default-avatar.png";
 
 // users page - view all family members registered in the app
 function Users() {

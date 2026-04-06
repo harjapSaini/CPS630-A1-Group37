@@ -9,6 +9,7 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEle
 // analytics page - shows spending info and charts
 function Analytics() {
   let [data, setData] = useState([]);
+  let [users, setUsers] = useState([]);
   let [loading, setLoading] = useState(true);
   let [budget, setBudget] = useState("");
   let [budgetMsg, setBudgetMsg] = useState("Enter a budget to see your spending gauge.");
@@ -17,12 +18,16 @@ function Analytics() {
   let [barColor, setBarColor] = useState("green");
 
   useEffect(function () {
-    fetch("/api/list")
-      .then(function (res) {
-        return res.json();
-      })
-      .then(function (items) {
+    Promise.all([
+      fetch("/api/list").then(function (res) { return res.json(); }),
+      fetch("/api/users").then(function (res) { return res.json(); })
+    ])
+      .then(function (results) {
+        let items = results[0];
+        let usersList = results[1];
+
         setData(items);
+        setUsers(usersList);
         setLoading(false);
 
         // check for saved budget
@@ -135,7 +140,17 @@ function Analytics() {
     let spenders = {};
     for (let i = 0; i < data.length; i++) {
       if (data[i].status === "In Cart") {
-        let name = data[i].addedBy || "Anonymous";
+        let addedById = data[i].addedBy;
+        let name = "Anonymous";
+
+        for (let j = 0; j < users.length; j++) {
+          // Check against both ID and Name just in case there is old Assignment 2 data
+          if (users[j]._id === addedById || users[j].name === addedById) {
+            name = users[j].name;
+            break;
+          }
+        }
+
         let cost = data[i].price * data[i].quantity;
         spenders[name] = (spenders[name] || 0) + cost;
       }

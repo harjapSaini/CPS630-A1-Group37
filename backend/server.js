@@ -27,10 +27,10 @@ app.use(function (req, res) {
 mongoose.connect("mongodb://127.0.0.1:27017/shopperpet")
   .then(function () {
     console.log("Connected to MongoDB");
-    return seedDatabase();
+    return seedUsers();
   })
   .then(function () {
-    return seedUsers();   
+    return seedDatabase();   
   })
   .then(function () {
     app.listen(PORT, function () {
