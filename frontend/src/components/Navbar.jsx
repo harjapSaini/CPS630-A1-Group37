@@ -1,15 +1,33 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 function Navbar() {
   const navigate = useNavigate();
 
-  let currentUserName = localStorage.getItem("shopperpet_user") || "";
+  let [currentUserName, setCurrentUserName] = useState(localStorage.getItem("shopperpet_user") || "User");
 
+
+  useEffect(function() {
+
+    // Listen for browser update on profile change
+    function handleProfileUpdate() {
+      let updatedName = localStorage.getItem("shopperpet_user") || "User";
+      setCurrentUserName(updatedName);
+    }
+
+    window.addEventListener("profile-updated", handleProfileUpdate);
+
+    // Cleanup the listener
+    return function() {
+      window.removeEventListener("profile-updated", handleProfileUpdate);
+    };
+  }, []);
 
   const handleLogout = () => {
 
     localStorage.removeItem("shopperpet_token");
     localStorage.removeItem("shopperpet_user");
+    localStorage.removeItem("shopperpet_id");
 
     console.log("User logged out");
     navigate("/login"); 

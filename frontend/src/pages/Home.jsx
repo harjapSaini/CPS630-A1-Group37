@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
+// Need to add socket so importing this...
+import io from "socket.io-client";
+
 // home page - shows hero section and 3 most recent items
 function Home() {
   let [items, setItems] = useState([]);
   let [loading, setLoading] = useState(true);
   let [error, setError] = useState(false);
 
-  useEffect(function () {
+  function loadRecentItems() {
     fetch("/api/list")
       .then(function (res) {
         return res.json();
@@ -24,6 +27,24 @@ function Home() {
         setError(true);
         setLoading(false);
       });
+  }
+
+  useEffect(function () {
+    loadRecentItems(); // Load it initally
+
+    let socket = io("http://localhost:8080");
+
+    // when list updated, listen and refresh
+    socket.on("list-updated", function () {
+      loadRecentItems(); 
+    });
+
+    // if user leaves page, disconnect socket
+    return function () {
+      socket.disconnect();
+    };
+
+
   }, []);
 
   return (

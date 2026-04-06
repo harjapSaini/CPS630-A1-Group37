@@ -158,6 +158,9 @@ router.post("/list", async function (req, res) {
     });
 
     await newItem.save();
+
+    req.app.get("io").emit("list-updated"); // Socket to broadcast that list changed
+
     res.status(201).json(newItem);
   } catch (err) {
     res.status(500).json({ error: "Failed to save item" });
@@ -183,6 +186,9 @@ router.patch("/list/:id", async function (req, res) {
     if (req.body.category !== undefined) item.category = req.body.category;
 
     await item.save();
+
+    req.app.get("io").emit("list-updated"); // Socket broadcast that list updated
+
     res.json(item);
   } catch (err) {
     res.status(500).json({ error: "Failed to update item" });
@@ -196,6 +202,8 @@ router.delete("/list/:id", async function (req, res) {
     if (!item) {
       return res.status(404).json({ error: "Item not found" });
     }
+
+    req.app.get("io").emit("list-updated"); // Socket broadcast list change/now removed
 
     res.json({ message: "Item removed", item: item });
   } catch (err) {

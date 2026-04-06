@@ -62,6 +62,8 @@ function Profile() {
           res.json().then(function (data) {
             // Update the browser storage so the navbar updates it
             localStorage.setItem("shopperpet_user", data.name);
+
+            window.dispatchEvent(new Event("profile-updated")); // Announce to browser the profile is changed
             
             showToast("Profile updated successfully!");
             
@@ -94,6 +96,8 @@ function Profile() {
             id="name" 
             required 
             value={name} 
+            maxLength={50}
+            minLength={3}
             onChange={function (e) { setName(e.target.value); }} 
           />
         </div>
@@ -110,7 +114,9 @@ function Profile() {
             type="password" 
             id="password" 
             placeholder="At least 6 characters" 
-            value={password} 
+            value={password}
+            minLength={6}
+
             onChange={function (e) { setPassword(e.target.value); }} 
           />
         </div>

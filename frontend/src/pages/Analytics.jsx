@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from "chart.js";
 import { Doughnut, Bar } from "react-chartjs-2";
 
+// Need this for socket listening
+import io from "socket.io-client";
+
 // register chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
@@ -17,7 +20,7 @@ function Analytics() {
   let [barWidth, setBarWidth] = useState("0%");
   let [barColor, setBarColor] = useState("green");
 
-  useEffect(function () {
+  function loadAnalyticsData() {
     Promise.all([
       fetch("/api/list").then(function (res) { return res.json(); }),
       fetch("/api/users").then(function (res) { return res.json(); })
@@ -41,6 +44,24 @@ function Analytics() {
         console.log("Failed to load analytics", e);
         setLoading(false);
       });
+  }
+
+  useEffect(function () {
+    loadAnalyticsData(); // Load initally
+
+    let socket = io("http://localhost:8080");
+
+    // Listen for any changes to the list and re-fresh data
+    socket.on("list-updated", function () {
+      loadAnalyticsData(); 
+    });
+
+    // Disconnect when user left page
+    return function () {
+      socket.disconnect();
+    };
+
+
   }, []);
 
   // only count items that are in the cart for the total cost

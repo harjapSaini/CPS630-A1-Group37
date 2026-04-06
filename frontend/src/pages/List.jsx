@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { lifecycle, statusConfig } from "../constants";
 import { Toast, useToast } from "../components/Toast";
 
+// Socket import
+import io from "socket.io-client";
+
 // shopping list page - full CRUD view
 function List() {
   let [items, setItems] = useState([]);
@@ -28,6 +31,20 @@ function List() {
 
   useEffect(function () {
     loadList();
+
+    // Socket code in this function to refresh
+
+    let socket = io("http://localhost:8080"); // conn to backend
+
+    socket.on("list-updated", function () {
+      loadList(); // Re-fresh
+    });
+
+    // If user leaves the page, then disconnect it
+    return function () {
+      socket.disconnect();
+    };
+
   }, []);
 
   // returns the css class for a given status
