@@ -36,7 +36,6 @@ function Home() {
         <div className="btn-group">
           <Link to="/list" className="btn btn-primary">View List</Link>
           <Link to="/add" className="btn btn-primary">Add Item</Link>
-          <Link to="/add-user" className="btn btn-primary">Add User</Link> {/* TODO: Need to remove this later */}
           <Link to="/analytics" className="btn btn-secondary">Analytics</Link>
         </div>
       </section>

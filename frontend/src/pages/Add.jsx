@@ -28,8 +28,14 @@ function Add() {
     {
       setUsers(data);
 
-      if (!addedBy && data.length > 0) { // Takes first user if nothing is selected
-        setAddedBy(data[0].name);
+      let currentUserId = localStorage.getItem("shopperpet_id");
+
+      if (!addedBy && data.length > 0) {
+        if (currentUserId) {
+          setAddedBy(currentUserId);
+        } else {
+          setAddedBy(data[0]._id); // Fallback to first user's ID
+        }
       }
     })
     .catch(function () 
@@ -54,7 +60,7 @@ function Add() {
       quantity: parseInt(quantity),
       price: parseFloat(price) || 0,
       store: store.trim(),
-      addedBy: addedBy.trim(),
+      addedBy: addedBy,
       priority: priority,
       notes: notes.trim(),
       status: lifecycle[0]
@@ -124,8 +130,8 @@ function Add() {
             <option value="">Select...</option>
             {users.map(function (u) {
               return (
-                <option key={u._id} value={u.name}>
-                  {u.name} ({u.age})
+                <option key={u._id} value={u._id}>
+                  {u.name} (@{u.username})
                 </option>
               );
             })}

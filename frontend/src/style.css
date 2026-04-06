@@ -572,7 +572,6 @@ h2 {
   border: none;
   color: crimson;
   font-family: inherit;
-  font-size: 16px;
   cursor: pointer;
   font-weight: bold;
   padding: 0;
@@ -583,4 +582,15 @@ h2 {
 .logout-btn:hover {
   text-decoration: underline;
   opacity: 0.7;
+}
+
+
+.user-avatar-img {
+  width: 50px;          
+  height: 50px;
+  border-radius: 50%;   
+  object-fit: cover;    
+  margin-left: 8px;
+  padding: 0.1em;
+  border: 2px solid teal;
 }

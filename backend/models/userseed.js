@@ -2,19 +2,24 @@ const User = require("./User");
 
 const userData = [
   { 
-    name: "Mom", 
-    age: 50 
+    name: "Mom",
+    username: "mom",
+    password: "password123" 
   },
   { 
     name: "Dad", 
-    age: 52 
+    username: "dad",
+    password: "password123"
   },
   { 
-    name: "Son", 
-    age: 21 
+    name: "Brother", 
+    username: "bro",
+    password: "password123"
   },
-  { name: "Kids", 
-    age: 10 
+  { 
+    name: "Sister", 
+    username: "sis",
+    password: "password123"
   }
 ];
 

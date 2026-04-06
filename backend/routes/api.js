@@ -13,25 +13,96 @@ router.get("/users", async function (req, res) {
   }
 });
 
-router.post("/users", async function (req, res) {
+
+// Update a specific user's profile
+router.patch("/users/:id", async function (req, res) {
+  try {
+    let user = await User.findById(req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // If the frontend sent a new name, update it
+    if (req.body.name) {
+      user.name = req.body.name;
+    }
+    
+    // If the frontend sent a new password, update it
+    if (req.body.password) {
+      user.password = req.body.password; 
+    }
+    await user.save();
+    
+    // Send back the new name so the frontend can update the Navbar
+    res.status(200).json({ name: user.name });
+
+  } catch (err) {
+    console.log("Profile update error:", err);
+    res.status(500).json({ error: "Failed to update profile" });
+  }
+});
+
+// register a new user
+router.post("/auth/register", async function (req, res) {
   try {
     let b = req.body;
 
-    if (!b.name || !b.age) {
-      return res.status(400).json({ error: "Missing required fields: name, age" });
+    if (!b.name || !b.username || !b.password) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    if (b.password.length < 6) {
+      return res.status(400).json({ error: "Password must be at least 6 characters" });
+    }
+    let existingUser = await User.findOne({ username: b.username });
+    if (existingUser) {
+      return res.status(400).json({ error: "Username is already taken" });
     }
 
     let newUser = new User({
       name: b.name.trim(),
-      age: Number(b.age)
+      username: b.username.trim().toLowerCase(),
+      password: b.password
     });
 
     await newUser.save();
-
     res.status(201).json(newUser);
 
   } catch (err) {
-    res.status(500).json({ error: "Failed to create user" });
+    console.log("Register error:", err);
+    res.status(500).json({ error: "Failed to create account" });
+  }
+});
+
+
+// Login an existing user
+router.post("/auth/login", async function (req, res) {
+  try {
+    let b = req.body;
+
+    if (!b.username || !b.password) {
+      return res.status(400).json({ error: "Missing username or password" });
+    }
+
+    let user = await User.findOne({ username: b.username.toLowerCase() });
+
+    if (!user || user.password !== b.password) {
+      return res.status(401).json({ error: "Invalid username or password" });
+    }
+
+    res.status(200).json({
+      message: "Login successful",
+      id: user._id,
+      name: user.name,
+      username: user.username,
+      // TODO: We need to add the real JWT token here later
+      token: "fake-jwt-token-for-now" 
+    });
+
+  } catch (err) {
+    console.log("Login error:", err);
+    res.status(500).json({ error: "Failed to login" });
   }
 });
 

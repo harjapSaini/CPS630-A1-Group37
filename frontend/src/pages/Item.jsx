@@ -9,6 +9,7 @@ function Item() {
   let [item, setItem] = useState(null);
   let [notFound, setNotFound] = useState(false);
   let [isEditing, setIsEditing] = useState(false);
+  let [users, setUsers] = useState([]);
 
   // edit form state
   let [editCategory, setEditCategory] = useState("");
@@ -38,6 +39,20 @@ function Item() {
       });
   }, [id]);
 
+  // Fetch all users in our DB for the drop-down
+  useEffect(function () {
+    fetch("/api/users")
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (data) {
+        setUsers(data);
+      })
+      .catch(function () {
+        console.log("Failed to load users");
+      });
+  }, []);
+
   // returns css class for item status
   function getStatusClass(status) {
     if (statusConfig[status]) return statusConfig[status].class;
@@ -50,9 +65,18 @@ function Item() {
     setEditQuantity(item.quantity);
     setEditPrice(item.price);
     setEditStore(item.store || "");
-    setEditAddedBy(item.addedBy);
     setEditNotes(item.notes || "");
     setIsEditing(true);
+
+    // the piece of code below ensure the addedby field pre-select the original user who added it.
+    let matchedId = item.addedBy;
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].name === item.addedBy || users[i]._id === item.addedBy) {
+        matchedId = users[i]._id;
+        break;
+      }
+    }
+    setEditAddedBy(matchedId);
   }
 
   // save the edited fields to the server
@@ -149,7 +173,20 @@ function Item() {
             <input id="edit-store" type="text" value={editStore} onChange={function (e) { setEditStore(e.target.value); }} />
 
             <span className="detail-label">Added By</span>
-            <input id="edit-addedBy" type="text" value={editAddedBy} onChange={function (e) { setEditAddedBy(e.target.value); }} />
+            <select
+              id="edit-addedBy"
+              value={editAddedBy}
+              onChange={function (e) { setEditAddedBy(e.target.value); }}
+            >
+              <option value="">Select...</option>
+              {users.map(function (u) {
+                return (
+                  <option key={u._id} value={u._id}>
+                    {u.name} (@{u.username})
+                  </option>
+                );
+              })}
+            </select>
 
             <span className="detail-label">Notes</span>
             <textarea id="edit-notes" value={editNotes} onChange={function (e) { setEditNotes(e.target.value); }}></textarea>
@@ -167,6 +204,14 @@ function Item() {
   // view mode
   let statusClass = getStatusClass(item.status);
 
+  let displayAddedByName = item.addedBy;
+  for (let i = 0; i < users.length; i++) {
+    if (users[i]._id === item.addedBy || users[i].name === item.addedBy) {
+      displayAddedByName = users[i].name;
+      break;
+    }
+  }
+
   return (
     <main className="container">
       <div className="card" style={{ marginTop: "1rem" }}>
@@ -182,8 +227,7 @@ function Item() {
           <span className="detail-label">Quantity</span><span className="detail-value">{item.quantity}</span>
           <span className="detail-label">Price</span><span className="detail-value">${item.price.toFixed(2)}</span>
           <span className="detail-label">Store</span><span className="detail-value">{item.store || "-"}</span>
-          <span className="detail-label">Added By</span><span className="detail-value">{item.addedBy}</span>
-          <span className="detail-label">Date Added</span><span className="detail-value">{item.dateAdded}</span>
+          <span className="detail-label">Added By</span><span className="detail-value">{displayAddedByName}</span>          <span className="detail-label">Date Added</span><span className="detail-value">{item.dateAdded}</span>
           <span className="detail-label">Notes</span><span className="detail-value">{item.notes || "-"}</span>
         </div>
         <div className="btn-group" style={{ marginTop: "1.25rem" }}>
