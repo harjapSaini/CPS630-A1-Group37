@@ -1,6 +1,6 @@
 # ShopperPet
 
-A grocery list web app built for CPS 630 Assignment 1. Made with **Node.js**, **Express**, **MongoDB + Mongoose** on the backend and **React + Vite** on the frontend.
+A grocery list web app built for CPS 630 Assignment 3. Made with **Node.js**, **Express**, **MongoDB + Mongoose** on the backend and **React + Vite** on the frontend.
 
 ## What is it?
 
