@@ -16,7 +16,7 @@ Here's what you can do with it:
 - **Analytics** - a dashboard that shows spending breakdowns, category charts, and a budget tracker. Right now it only looks at items that are "In Cart". The idea is you'd use it while shopping to estimate how much you'll spend before going to the cashier. Theres also a spender leaderboard so family members could split the bill
 - **Download List** - lets you export your list as a `.txt` file. **[x]** means its in cart, **[]** means its still needed
 - **User Authentication** - Secure login and registration. Unauthenticated users cannot view or edit the household grocery list.
-- **Real-Time Syncing** - Powered by Socket.io, now if a family member adds or checks off an item from another device, it instantly updates on your screen without refreshing the page.
+- **Real-Time Syncing** - Powered by Socket.io, if a family member adds/checks off an item or assigns you to a grocery trip, it instantly updates on your screen (and adds a notification badge to your Nav Bar) without refreshing the page.
 - **User Profiles & Directory** - Family members can edit their display names and change passwords, and view a directory of everyone currently in the household.
 
 
@@ -178,6 +178,20 @@ You can log in immediately using the seeded accounts (username / password / user
 | `PATCH`  | `/api/trips/:id`     | Updates a trip (like status)  | `trips-updated`| 200 / 401 / 404 |
 | `DELETE` | `/api/trips/:id`     | Deletes a trip                | `trips-updated`| 200 / 401 / 404 |
 
+
+### Real-Time Communication
+
+ShopperPet uses **Socket.io** to provide seamless real-time syncing across all connected clients. When actions are taken that affect global data, the backend emits broadcast events via a WebSocket connection instead of relying on standard HTTP requests to manually refresh data.
+
+**How it works (The Notification Badge Feature):**
+1. **The Web Socket:** When a user opens the app, the React `Navbar.jsx` component connects to the Express backend via `io("http://localhost:8080")`.
+2. **The Broadcast:** If User B creates a new Grocery Trip and assigns User A to it, the backend saves the trip to MongoDB and fires an `req.app.get("io").emit("trips-updated")` socket event globally.
+3. **The Listener:** User A's browser instantly receives the `trips-updated` event through the open websocket.
+4. **The Update:** The listener in `Navbar.jsx` immediately triggers a silent background fetch for the updated trips, filters how many active trips are mapped to User A's `userId`, and renders a red notification badge `<span className="nav-badge"></span>` on their screen.
+
+This exact push-pattern is also utilized to keep the main grocery list and active trip checklists perfectly synchronized when multiple family members are shopping concurrently.
+
+---
 
 ### Database Schema (Mongoose)
 
