@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const GroceryItem = require("../models/GroceryItem");
 const User = require("../models/User");
+const Trip = require("../models/Trip");
 
 // Need these for encrypting password and jwt tokens
 const bcrypt = require("bcrypt");
@@ -260,6 +261,107 @@ router.delete("/list/:id", verifyToken, async function (req, res) {
     res.json({ message: "Item removed", item: item });
   } catch (err) {
     res.status(500).json({ error: "Failed to delete item" });
+  }
+});
+
+// --- TRIP ROUTES ---
+
+// get all trips
+router.get("/trips", verifyToken, async function (req, res) {
+  try {
+    let trips = await Trip.find().lean();
+    res.json(trips);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to read trips" });
+  }
+});
+
+// get a single trip by id
+router.get("/trips/:id", verifyToken, async function (req, res) {
+  try {
+    let trip = await Trip.findOne({ tripId: parseInt(req.params.id) });
+    if (!trip) {
+      return res.status(404).json({ error: "Trip not found" });
+    }
+    res.json(trip);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to read trip" });
+  }
+});
+
+// create a new trip
+router.post("/trips", verifyToken, async function (req, res) {
+  try {
+    let b = req.body;
+
+    if (!b.name) {
+      return res.status(400).json({ error: "Missing required fields: name" });
+    }
+
+    let last = await Trip.findOne().sort({ tripId: -1 });
+    let nextId = last ? last.tripId + 1 : 1;
+
+    let newTrip = new Trip({
+      tripId: nextId,
+      name: b.name.trim(),
+      store: b.store ? b.store.trim() : "",
+      plannedDate: b.plannedDate || "",
+      createdBy: b.createdBy || "Anonymous",
+      assignedTo: Array.isArray(b.assignedTo) ? b.assignedTo : [],
+      itemIds: Array.isArray(b.itemIds) ? b.itemIds : [],
+      budget: b.budget ? Number(b.budget) : undefined,
+      status: b.status || "Planning",
+    });
+
+    await newTrip.save();
+
+    req.app.get("io").emit("trips-updated");
+
+    res.status(201).json(newTrip);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to create trip" });
+  }
+});
+
+// update a trip
+router.patch("/trips/:id", verifyToken, async function (req, res) {
+  try {
+    let trip = await Trip.findOne({ tripId: parseInt(req.params.id) });
+    if (!trip) {
+      return res.status(404).json({ error: "Trip not found" });
+    }
+
+    if (req.body.name !== undefined) trip.name = req.body.name;
+    if (req.body.store !== undefined) trip.store = req.body.store;
+    if (req.body.plannedDate !== undefined) trip.plannedDate = req.body.plannedDate;
+    if (req.body.assignedTo !== undefined) trip.assignedTo = req.body.assignedTo;
+    if (req.body.itemIds !== undefined) trip.itemIds = req.body.itemIds;
+    if (req.body.budget !== undefined) trip.budget = req.body.budget;
+    if (req.body.status !== undefined) trip.status = req.body.status;
+
+    await trip.save();
+
+    req.app.get("io").emit("trips-updated");
+
+    res.json(trip);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update trip" });
+  }
+});
+
+// delete a trip
+router.delete("/trips/:id", verifyToken, async function (req, res) {
+  try {
+    let trip = await Trip.findOneAndDelete({ tripId: parseInt(req.params.id) });
+    if (!trip) {
+      return res.status(404).json({ error: "Trip not found" });
+    }
+
+    req.app.get("io").emit("trips-updated");
+
+    res.json({ message: "Trip removed", trip: trip });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete trip" });
   }
 });
 

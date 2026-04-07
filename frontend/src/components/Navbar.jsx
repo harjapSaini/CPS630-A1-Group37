@@ -43,6 +43,7 @@ function Navbar() {
         <NavLink to="/" className={({ isActive }) => isActive ? "active" : ""} end>Home</NavLink>
         <NavLink to="/list" className={({ isActive }) => isActive ? "active" : ""}>Groceries</NavLink>
         <NavLink to="/add" className={({ isActive }) => isActive ? "active" : ""}>Add Item</NavLink>
+        <NavLink to="/trips" className={({ isActive }) => isActive ? "active" : ""}>Trips</NavLink>
         <NavLink to="/analytics" className={({ isActive }) => isActive ? "active" : ""}>Analytics</NavLink>
         <NavLink to="/users" className={({ isActive }) => isActive ? "active" : ""}>Users</NavLink>
         

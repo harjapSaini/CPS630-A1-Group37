@@ -12,6 +12,7 @@ Here's what you can do with it:
 - **Shopping List** - see all your items, change their status (Needed -> In Cart -> Purchased -> Consumed), or delete them
 - **Item Details** - click on any item to see all its info
 - **Edit Items** - you can also edit item details from the detail page ("Added By" is read-only and cannot be reassigned)
+- **Grocery Trip Planner** - start a specific shopping trip! Assign household members, establish a budget, and select items marked as 'Needed'. Active mode displays a live checklist and dynamic budget gauge as you shop.
 - **Analytics** - a dashboard that shows spending breakdowns, category charts, and a budget tracker. Right now it only looks at items that are "In Cart". The idea is you'd use it while shopping to estimate how much you'll spend before going to the cashier. Theres also a spender leaderboard so family members could split the bill
 - **Download List** - lets you export your list as a `.txt` file. **[x]** means its in cart, **[]** means its still needed
 - **User Authentication** - Secure login and registration. Unauthenticated users cannot view or edit the household grocery list.
@@ -46,6 +47,7 @@ CPS630-A3-Group37/
 |   |-- models/
 |   |   |-- GroceryItem.js   # Mongoose schema for grocery items
 |   |   |-- User.js          # Mongoose schema for household users
+|   |   |-- Trip.js          # Mongoose schema for grocery trips
 |   |   |-- seed.js          # Seeds test grocery item data on first startup
 |   |   |-- userseed.js      # Seeds test user data on first startup
 |   |-- package.json
@@ -70,6 +72,9 @@ CPS630-A3-Group37/
 |   |       |-- List.jsx     # Shopping list (full CRUD)
 |   |       |-- Add.jsx      # Add item form
 |   |       |-- Item.jsx     # Item detail + edit
+|   |       |-- Trips.jsx    # Grocery trip dashboard
+|   |       |-- NewTrip.jsx  # Trip setup and planner
+|   |       |-- TripDetail.jsx # Active shopping checklist and summary
 |   |       |-- Analytics.jsx # Charts + budget gauge
 |   |-- src/
 |   |   |-- assests / # Images
@@ -127,6 +132,9 @@ You can log in immediately using the seeded accounts (username / password / user
 | `/list`      | Shopping List | All items, change status, delete (Protected)       |
 | `/add`       | Add Item      | Form to add a new grocery item (Protected)        |
 | `/item/:id`  | Item Details  | View/edit/delete a single item (Protected)        |
+| `/trips`     | Trips         | View all planned, active, and completed trips (Protected)|
+| `/trips/new` | Plan Trip     | Form to set up metadata and assign users/items to a trip (Protected)|
+| `/trips/:id` | Trip Detail   | The active checklist, budget gauge, and completion flow (Protected)|
 | `/analytics` | Analytics     | Charts and budget tracking  (Protected)           |
 | `/users` | Users     | Directory of all users  (Protected)           |
 | `/profile` | Profile     | Update display name and password (Protected)           |
@@ -160,6 +168,16 @@ You can log in immediately using the seeded accounts (username / password / user
 | `GET`    | `/api/users`     | Returns all users             | -               | 200 / 401       |
 | `PATCH`  | `/api/users/:id` | Updates profile/password      | `users-updated` | 200 / 401 / 404 |
 
+#### Trips
+
+| Method   | Endpoint             | What it does                  | Socket Event   | Status Codes    |
+| -------- | -------------------- | ----------------------------- | -------------- | --------------- |
+| `GET`    | `/api/trips`         | Returns all shopping trips    | -              | 200 / 401       |
+| `GET`    | `/api/trips/:id`     | Returns one trip by its ID    | -              | 200 / 401 / 404 |
+| `POST`   | `/api/trips`         | Plan a new trip               | `trips-updated`| 201 / 400 / 401 |
+| `PATCH`  | `/api/trips/:id`     | Updates a trip (like status)  | `trips-updated`| 200 / 401 / 404 |
+| `DELETE` | `/api/trips/:id`     | Deletes a trip                | `trips-updated`| 200 / 401 / 404 |
+
 
 ### Database Schema (Mongoose)
 
@@ -192,6 +210,23 @@ Household members are stored with the following fields and validation:
 | `username`  | String | Required, unique, lowercase                     |
 | `password`  | String | Required (Stored as a bcrypt hash)              |
 | `createdAt` | Date   | Auto-set to current date/time                   |
+
+#### Trip
+
+Grocery trips organize items, budget, and members:
+
+| Field       | Type           | Validation                                      |
+| ----------- | -------------- | ----------------------------------------------- |
+| `tripId`    | Number         | Required, unique, auto-incremented, min 1       |
+| `name`      | String         | Required, trimmed, max 100 chars                |
+| `store`     | String         | Trimmed, max 100 chars                          |
+| `plannedDate`| String        | Matches YYYY-MM-DD format                       |
+| `createdBy` | String         | User ID of creator (default: "Anonymous")       |
+| `assignedTo`| Array of String| User IDs assigned to join the trip              |
+| `itemIds`   | Array of Number| Grocery Item IDs grouped into this trip         |
+| `budget`    | Number         | Min 0, max 99999                                |
+| `status`    | String         | Must be Planning / Active / Completed           |
+| `createdAt` | Date           | Auto-set to current date/time                   |
 
 ### Seed Function
 

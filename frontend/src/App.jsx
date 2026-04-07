@@ -10,6 +10,9 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Users from "./pages/Users";
 import Profile from "./pages/Profile";
+import Trips from "./pages/Trips";
+import NewTrip from "./pages/NewTrip";
+import TripDetail from "./pages/TripDetail";
 
 function MainLayout() {
   return (
@@ -36,6 +39,9 @@ function App() {
             <Route path="/list" element={<List />} />
             <Route path="/add" element={<Add />} />
             <Route path="/item/:id" element={<Item />} />
+            <Route path="/trips" element={<Trips />} />
+            <Route path="/trips/new" element={<NewTrip />} />
+            <Route path="/trips/:id" element={<TripDetail />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/users" element={<Users />} />
             <Route path="/profile" element={<Profile />} />
