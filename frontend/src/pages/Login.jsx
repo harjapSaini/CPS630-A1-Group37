@@ -40,9 +40,11 @@ function Login() {
       password: password
     };
 
+    let token = localStorage.getItem("shopperpet_token");
+
     fetch("/api/auth/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
       body: JSON.stringify(body)
     })
       .then(function (res) {
@@ -54,7 +56,6 @@ function Login() {
             localStorage.setItem("shopperpet_user", data.name); // save name for navbar
             localStorage.setItem("shopperpet_id", data.id); // save for the drop down for addedby
 
-            console.log("Login successful for:", data.username);
             navigate("/"); // redirect to home page after logging in
           });
         } else {
@@ -82,7 +83,7 @@ function Login() {
           <input 
             type="text" 
             id="username" 
-            placeholder="e.g. mathavan" 
+            placeholder="e.g. username" 
             required 
             value={username} 
             onChange={function (e) { setUsername(e.target.value); }} 

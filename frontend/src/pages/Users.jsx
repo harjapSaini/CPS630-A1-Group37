@@ -9,7 +9,8 @@ function Users() {
 
   // fetch all users from the api
   function loadUsers() {
-    fetch("/api/users")
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/users", {headers: {"Authorization": "Bearer " + token}})
       .then(function (res) {
         if (!res.ok) throw new Error();
         return res.json();

@@ -33,16 +33,17 @@ function Register() {
       password: password
     };
 
+
+    let token = localStorage.getItem("shopperpet_token");
     fetch("/api/auth/register", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
       body: JSON.stringify(body)
     })
       .then(function (res) {
         if (res.ok) {
           res.json().then(function () {
-            console.log("Registration successful");
-            // redirect them to login so they can sign in with their new account
+            // redirect to login so they can sign in with their new account
             navigate("/login", { state: { successMessage: "Account created successfully! Please log in." } });
           });
         } else {

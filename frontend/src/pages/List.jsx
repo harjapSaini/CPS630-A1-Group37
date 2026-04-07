@@ -15,7 +15,8 @@ function List() {
 
   // fetch all items from the api
   function loadList() {
-    fetch("/api/list")
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/list", {headers: {"Authorization": "Bearer " + token}})
       .then(function (res) {
         return res.json();
       })
@@ -55,9 +56,10 @@ function List() {
 
   // changes the status of an item to the next one in lifecycle
   function toggleStatus(id, newStatus) {
+    let token = localStorage.getItem("shopperpet_token");
     fetch("/api/list/" + id, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
       body: JSON.stringify({ status: newStatus })
     })
       .then(function () {
@@ -72,8 +74,8 @@ function List() {
   // removes an item from the list
   function deleteItem(id) {
     if (!confirm("Remove this item from the list?")) return;
-
-    fetch("/api/list/" + id, { method: "DELETE" })
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/list/" + id, { method: "DELETE", headers: {"Authorization": "Bearer " + token} })
       .then(function (res) {
         if (res.ok) {
           showToast("Item removed");
@@ -89,7 +91,8 @@ function List() {
 
   // downloads the shopping list as a text file
   function downloadList() {
-    fetch("/api/list")
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/list", {headers: {"Authorization": "Bearer " + token}})
       .then(function (res) {
         return res.json();
       })

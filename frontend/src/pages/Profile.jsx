@@ -52,9 +52,10 @@ function Profile() {
     }
 
     // Finally, send data to our new backend route
+    let token = localStorage.getItem("shopperpet_token");
     fetch("/api/users/" + userId, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
       body: JSON.stringify(body)
     })
       .then(function (res) {

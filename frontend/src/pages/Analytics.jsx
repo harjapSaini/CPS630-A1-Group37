@@ -21,9 +21,10 @@ function Analytics() {
   let [barColor, setBarColor] = useState("green");
 
   function loadAnalyticsData() {
+    let token = localStorage.getItem("shopperpet_token");
     Promise.all([
-      fetch("/api/list").then(function (res) { return res.json(); }),
-      fetch("/api/users").then(function (res) { return res.json(); })
+      fetch("/api/list", {headers: {"Authorization": "Bearer " + token}}).then(function (res) { return res.json(); }),
+      fetch("/api/users", {headers: {"Authorization": "Bearer " + token}}).then(function (res) { return res.json(); })
     ])
       .then(function (results) {
         let items = results[0];

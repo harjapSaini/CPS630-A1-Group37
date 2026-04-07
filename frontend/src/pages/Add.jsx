@@ -19,29 +19,35 @@ function Add() {
   let [users, setUsers] = useState([]);
 
   useEffect(function () {
-  fetch("/api/users")
-    .then(function (res) 
-    { 
-      return res.json(); 
-    })
-    .then(function (data) 
-    {
-      setUsers(data);
 
-      let currentUserId = localStorage.getItem("shopperpet_id");
-
-      if (!addedBy && data.length > 0) {
-        if (currentUserId) {
-          setAddedBy(currentUserId);
-        } else {
-          setAddedBy(data[0]._id); // Fallback to first user's ID
-        }
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/users", {
+      headers: {
+        "Authorization": "Bearer " + token
       }
     })
-    .catch(function () 
-    {
-      console.log("Failed to load users");
-    });
+      .then(function (res) 
+      { 
+        return res.json(); 
+      })
+      .then(function (data) 
+      {
+        setUsers(data);
+
+        let currentUserId = localStorage.getItem("shopperpet_id");
+
+        if (!addedBy && data.length > 0) {
+          if (currentUserId) {
+            setAddedBy(currentUserId);
+          } else {
+            setAddedBy(data[0]._id); // Fallback to first user's ID
+          }
+        }
+      })
+      .catch(function () 
+      {
+        console.log("Failed to load users");
+      });
   }, []);
 
   function handleSubmit(e) {
@@ -66,9 +72,11 @@ function Add() {
       status: lifecycle[0]
     };
 
+    let token = localStorage.getItem("shopperpet_token");
+    
     fetch("/api/list", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
       body: JSON.stringify(body)
     })
       .then(function (res) {

@@ -29,7 +29,6 @@ function Navbar() {
     localStorage.removeItem("shopperpet_user");
     localStorage.removeItem("shopperpet_id");
 
-    console.log("User logged out");
     navigate("/login"); 
   };
 

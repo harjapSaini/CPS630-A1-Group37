@@ -11,7 +11,8 @@ function Home() {
   let [error, setError] = useState(false);
 
   function loadRecentItems() {
-    fetch("/api/list")
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/list", {headers: {"Authorization": "Bearer " + token}})
       .then(function (res) {
         return res.json();
       })

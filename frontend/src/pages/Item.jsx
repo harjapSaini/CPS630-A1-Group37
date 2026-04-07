@@ -20,7 +20,8 @@ function Item() {
   let [editNotes, setEditNotes] = useState("");
 
   useEffect(function () {
-    fetch("/api/list/" + id)
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/list/" + id, {headers: {"Authorization": "Bearer " + token}})
       .then(function (res) {
         if (!res.ok) {
           setNotFound(true);
@@ -41,7 +42,8 @@ function Item() {
 
   // Fetch all users in our DB for the drop-down
   useEffect(function () {
-    fetch("/api/users")
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/users", {headers: {"Authorization": "Bearer " + token}})
       .then(function (res) {
         return res.json();
       })
@@ -92,9 +94,10 @@ function Item() {
       notes: editNotes.trim()
     };
 
+    let token = localStorage.getItem("shopperpet_token");
     fetch("/api/list/" + item.id, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
       body: JSON.stringify(updatedData)
     })
       .then(function (res) {
@@ -114,7 +117,8 @@ function Item() {
   function deleteItem() {
     if (!confirm("Remove this item from the list?")) return;
 
-    fetch("/api/list/" + item.id, { method: "DELETE" })
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/list/" + item.id, { method: "DELETE", headers: {"Authorization": "Bearer " + token} })
       .then(function (res) {
         if (res.ok) {
           navigate("/list");

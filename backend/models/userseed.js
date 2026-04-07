@@ -1,4 +1,5 @@
 const User = require("./User");
+const bcrypt = require("bcrypt");
 
 const userData = [
   { 
@@ -27,6 +28,11 @@ async function seedUsers() {
   let count = await User.countDocuments();
 
   if (count === 0) {
+
+    for (let i = 0; i < userData.length; i++) {
+      userData[i].password = await bcrypt.hash(userData[i].password, 10);
+    }
+
     await User.insertMany(userData);
     console.log("Users seeded with " + userData.length + " users");
   } else {
