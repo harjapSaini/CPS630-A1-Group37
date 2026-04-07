@@ -1,6 +1,7 @@
 const GroceryItem = require("./GroceryItem");
+const User = require("./User");
 
-// test data to seed the database with - same items from grocery-data.json
+// test data to seed the database with
 const testData = [
   {
     id: 1,
@@ -35,7 +36,7 @@ const testData = [
     quantity: 4,
     price: 7.99,
     store: "Costco",
-    addedBy: "Kids",
+    addedBy: "Sister",
     priority: "Low",
     status: "In Cart",
     notes: "Pepperoni chicken preferred",
@@ -108,14 +109,30 @@ const testData = [
   }
 ];
 
-// checks if the grocery collection is empty
-// if it is, inserts the test data above
 async function seedDatabase() {
   let count = await GroceryItem.countDocuments();
 
   if (count === 0) {
-    await GroceryItem.insertMany(testData);
-    console.log("Database seeded with " + testData.length + " test items");
+    // fetch all users to grab their unique MongoDB IDs
+    let users = await User.find();
+    
+    // If users aren't seeded yet, stop here to avoid errors
+    if (users.length === 0) {
+      console.log("Waiting for Users to be seeded first...");
+      return;
+    }
+
+    // map it over the test data and replace the name with the actual userId
+    let mappedData = testData.map(function(item) {
+      let matchedUser = users.find(function(u) { return u.name === item.addedBy; });
+      
+      // replace string with the numeric userId
+      item.addedBy = matchedUser ? String(matchedUser.userId) : String(users[0].userId);
+      return item;
+    });
+
+    await GroceryItem.insertMany(mappedData);
+    console.log("Database seeded with " + mappedData.length + " test items");
   } else {
     console.log("Database already has " + count + " items, skipping seed");
   }

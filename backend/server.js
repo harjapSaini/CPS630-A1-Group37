@@ -7,6 +7,26 @@ const { seedUsers } = require("./models/userseed");
 const app = express();
 const PORT = 8080; //Used in lecture by prof
 
+// Needed and imported for socket.io
+const http = require("http"); 
+const { Server } = require("socket.io");
+
+
+// Socket io codes below
+const server = http.createServer(app);
+
+// this lets React frontend to talk to it
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PATCH", "DELETE"]
+  }
+});
+
+app.set("io", io); //we can use io inside routes/api.js later
+
+
+
 const apiRoutes = require("./routes/api");
 
 // Middlewares
@@ -24,16 +44,16 @@ app.use(function (req, res) {
 });
 
 // connect to mongodb then start the server
-mongoose.connect("mongodb://localhost:27017/shopperpet")
+mongoose.connect("mongodb://127.0.0.1:27017/shopperpet")
   .then(function () {
     console.log("Connected to MongoDB");
-    return seedDatabase();
+    return seedUsers();
   })
   .then(function () {
-    return seedUsers();   
+    return seedDatabase();   
   })
   .then(function () {
-    app.listen(PORT, function () {
+    server.listen(PORT, function () {
       console.log("ShopperPet running at http://localhost:" + PORT);
     });
   })

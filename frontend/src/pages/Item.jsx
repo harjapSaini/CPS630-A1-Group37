@@ -9,17 +9,19 @@ function Item() {
   let [item, setItem] = useState(null);
   let [notFound, setNotFound] = useState(false);
   let [isEditing, setIsEditing] = useState(false);
+  let [users, setUsers] = useState([]);
 
   // edit form state
   let [editCategory, setEditCategory] = useState("");
   let [editQuantity, setEditQuantity] = useState("");
   let [editPrice, setEditPrice] = useState("");
   let [editStore, setEditStore] = useState("");
-  let [editAddedBy, setEditAddedBy] = useState("");
+
   let [editNotes, setEditNotes] = useState("");
 
   useEffect(function () {
-    fetch("/api/list/" + id)
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/list/" + id, {headers: {"Authorization": "Bearer " + token}})
       .then(function (res) {
         if (!res.ok) {
           setNotFound(true);
@@ -38,6 +40,21 @@ function Item() {
       });
   }, [id]);
 
+  // Fetch all users in our DB for the drop-down
+  useEffect(function () {
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/users", {headers: {"Authorization": "Bearer " + token}})
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (data) {
+        setUsers(data);
+      })
+      .catch(function () {
+        console.log("Failed to load users");
+      });
+  }, []);
+
   // returns css class for item status
   function getStatusClass(status) {
     if (statusConfig[status]) return statusConfig[status].class;
@@ -50,7 +67,6 @@ function Item() {
     setEditQuantity(item.quantity);
     setEditPrice(item.price);
     setEditStore(item.store || "");
-    setEditAddedBy(item.addedBy);
     setEditNotes(item.notes || "");
     setIsEditing(true);
   }
@@ -64,13 +80,13 @@ function Item() {
       quantity: Number(editQuantity),
       price: Number(editPrice),
       store: editStore.trim(),
-      addedBy: editAddedBy.trim(),
       notes: editNotes.trim()
     };
 
+    let token = localStorage.getItem("shopperpet_token");
     fetch("/api/list/" + item.id, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
       body: JSON.stringify(updatedData)
     })
       .then(function (res) {
@@ -90,7 +106,8 @@ function Item() {
   function deleteItem() {
     if (!confirm("Remove this item from the list?")) return;
 
-    fetch("/api/list/" + item.id, { method: "DELETE" })
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/list/" + item.id, { method: "DELETE", headers: {"Authorization": "Bearer " + token} })
       .then(function (res) {
         if (res.ok) {
           navigate("/list");
@@ -149,7 +166,7 @@ function Item() {
             <input id="edit-store" type="text" value={editStore} onChange={function (e) { setEditStore(e.target.value); }} />
 
             <span className="detail-label">Added By</span>
-            <input id="edit-addedBy" type="text" value={editAddedBy} onChange={function (e) { setEditAddedBy(e.target.value); }} />
+            <input type="text" id="edit-addedBy" value={function () { for (let i = 0; i < users.length; i++) { if (String(users[i].userId) === item.addedBy || users[i].name === item.addedBy) return users[i].name; } return item.addedBy; }()} readOnly style={{ opacity: 0.7, cursor: "not-allowed" }} />
 
             <span className="detail-label">Notes</span>
             <textarea id="edit-notes" value={editNotes} onChange={function (e) { setEditNotes(e.target.value); }}></textarea>
@@ -167,6 +184,14 @@ function Item() {
   // view mode
   let statusClass = getStatusClass(item.status);
 
+  let displayAddedByName = item.addedBy;
+  for (let i = 0; i < users.length; i++) {
+    if (String(users[i].userId) === item.addedBy || users[i].name === item.addedBy) {
+      displayAddedByName = users[i].name;
+      break;
+    }
+  }
+
   return (
     <main className="container">
       <div className="card" style={{ marginTop: "1rem" }}>
@@ -182,8 +207,7 @@ function Item() {
           <span className="detail-label">Quantity</span><span className="detail-value">{item.quantity}</span>
           <span className="detail-label">Price</span><span className="detail-value">${item.price.toFixed(2)}</span>
           <span className="detail-label">Store</span><span className="detail-value">{item.store || "-"}</span>
-          <span className="detail-label">Added By</span><span className="detail-value">{item.addedBy}</span>
-          <span className="detail-label">Date Added</span><span className="detail-value">{item.dateAdded}</span>
+          <span className="detail-label">Added By</span><span className="detail-value">{displayAddedByName}</span>          <span className="detail-label">Date Added</span><span className="detail-value">{item.dateAdded}</span>
           <span className="detail-label">Notes</span><span className="detail-value">{item.notes || "-"}</span>
         </div>
         <div className="btn-group" style={{ marginTop: "1.25rem" }}>

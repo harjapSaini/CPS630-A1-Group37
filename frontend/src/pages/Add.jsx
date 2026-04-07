@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { lifecycle, categories } from "../constants";
 
@@ -13,30 +13,12 @@ function Add() {
   let [quantity, setQuantity] = useState(1);
   let [price, setPrice] = useState("");
   let [store, setStore] = useState("");
-  let [addedBy, setAddedBy] = useState("");
   let [priority, setPriority] = useState("Medium");
   let [notes, setNotes] = useState("");
-  let [users, setUsers] = useState([]);
 
-  useEffect(function () {
-  fetch("/api/users")
-    .then(function (res) 
-    { 
-      return res.json(); 
-    })
-    .then(function (data) 
-    {
-      setUsers(data);
-
-      if (!addedBy && data.length > 0) { // Takes first user if nothing is selected
-        setAddedBy(data[0].name);
-      }
-    })
-    .catch(function () 
-    {
-      console.log("Failed to load users");
-    });
-  }, []);
+  // addedBy is always the logged-in user (read from localStorage, set at login)
+  let currentUserId = localStorage.getItem("shopperpet_id") || "";
+  let currentUserName = localStorage.getItem("shopperpet_user") || "You";
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -54,15 +36,17 @@ function Add() {
       quantity: parseInt(quantity),
       price: parseFloat(price) || 0,
       store: store.trim(),
-      addedBy: addedBy.trim(),
+      addedBy: currentUserId,
       priority: priority,
       notes: notes.trim(),
       status: lifecycle[0]
     };
 
+    let token = localStorage.getItem("shopperpet_token");
+    
     fetch("/api/list", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
       body: JSON.stringify(body)
     })
       .then(function (res) {
@@ -116,21 +100,8 @@ function Add() {
           </div>
           <div className="form-group">
             <label htmlFor="addedBy">Added By</label>
-           <select
-            id="addedBy"
-            value={addedBy}
-            onChange={function (e) { setAddedBy(e.target.value); }}
-          >
-            <option value="">Select...</option>
-            {users.map(function (u) {
-              return (
-                <option key={u._id} value={u.name}>
-                  {u.name} ({u.age})
-                </option>
-              );
-            })}
-          </select>
-        </div>
+            <input type="text" id="addedBy" value={currentUserName} readOnly style={{ opacity: 0.7, cursor: "not-allowed" }} />
+          </div>
         </div>
         <div className="form-group">
           <label htmlFor="priority">Priority</label>

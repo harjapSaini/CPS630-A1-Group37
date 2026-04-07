@@ -14,8 +14,20 @@ export const statusConfig = {
   },
   "Consumed": {
     class: "status-consumed"
+  },
+  "Planning": {
+    class: "status-planning"
+  },
+  "Active": {
+    class: "status-active"
+  },
+  "Completed": {
+    class: "status-completed"
   }
 };
+
+// status lifecycle for trips
+export const tripLifecycle = ["Planning", "Active", "Completed"];
 
 // colors for charts
 export const chartColors = [

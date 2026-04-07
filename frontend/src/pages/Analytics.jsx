@@ -3,12 +3,16 @@ import { Link } from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from "chart.js";
 import { Doughnut, Bar } from "react-chartjs-2";
 
+// Need this for socket listening
+import io from "socket.io-client";
+
 // register chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 // analytics page - shows spending info and charts
 function Analytics() {
   let [data, setData] = useState([]);
+  let [users, setUsers] = useState([]);
   let [loading, setLoading] = useState(true);
   let [budget, setBudget] = useState("");
   let [budgetMsg, setBudgetMsg] = useState("Enter a budget to see your spending gauge.");
@@ -16,13 +20,18 @@ function Analytics() {
   let [barWidth, setBarWidth] = useState("0%");
   let [barColor, setBarColor] = useState("green");
 
-  useEffect(function () {
-    fetch("/api/list")
-      .then(function (res) {
-        return res.json();
-      })
-      .then(function (items) {
+  function loadAnalyticsData() {
+    let token = localStorage.getItem("shopperpet_token");
+    Promise.all([
+      fetch("/api/list", {headers: {"Authorization": "Bearer " + token}}).then(function (res) { return res.json(); }),
+      fetch("/api/users", {headers: {"Authorization": "Bearer " + token}}).then(function (res) { return res.json(); })
+    ])
+      .then(function (results) {
+        let items = results[0];
+        let usersList = results[1];
+
         setData(items);
+        setUsers(usersList);
         setLoading(false);
 
         // check for saved budget
@@ -36,6 +45,24 @@ function Analytics() {
         console.log("Failed to load analytics", e);
         setLoading(false);
       });
+  }
+
+  useEffect(function () {
+    loadAnalyticsData(); // Load initally
+
+    let socket = io("http://localhost:8080");
+
+    // Listen for any changes to the list and re-fresh data
+    socket.on("list-updated", function () {
+      loadAnalyticsData(); 
+    });
+
+    // Disconnect when user left page
+    return function () {
+      socket.disconnect();
+    };
+
+
   }, []);
 
   // only count items that are in the cart for the total cost
@@ -135,7 +162,17 @@ function Analytics() {
     let spenders = {};
     for (let i = 0; i < data.length; i++) {
       if (data[i].status === "In Cart") {
-        let name = data[i].addedBy || "Anonymous";
+        let addedById = data[i].addedBy;
+        let name = "Anonymous";
+
+        for (let j = 0; j < users.length; j++) {
+          // Check against both ID and Name just in case there is old Assignment 2 data
+          if (String(users[j].userId) === addedById || users[j].name === addedById) {
+            name = users[j].name;
+            break;
+          }
+        }
+
         let cost = data[i].price * data[i].quantity;
         spenders[name] = (spenders[name] || 0) + cost;
       }
