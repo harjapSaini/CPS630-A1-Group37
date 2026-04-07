@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { lifecycle, categories } from "../constants";
 
@@ -16,6 +16,39 @@ function Add() {
   let [addedBy, setAddedBy] = useState("");
   let [priority, setPriority] = useState("Medium");
   let [notes, setNotes] = useState("");
+  let [users, setUsers] = useState([]);
+
+  useEffect(function () {
+
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/users", {
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    })
+      .then(function (res) 
+      { 
+        return res.json(); 
+      })
+      .then(function (data) 
+      {
+        setUsers(data);
+
+        let currentUserId = localStorage.getItem("shopperpet_id");
+
+        if (!addedBy && data.length > 0) {
+          if (currentUserId) {
+            setAddedBy(currentUserId);
+          } else {
+            setAddedBy(data[0]._id); // Fallback to first user's ID
+          }
+        }
+      })
+      .catch(function () 
+      {
+        console.log("Failed to load users");
+      });
+  }, []);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -33,15 +66,17 @@ function Add() {
       quantity: parseInt(quantity),
       price: parseFloat(price) || 0,
       store: store.trim(),
-      addedBy: addedBy.trim(),
+      addedBy: addedBy,
       priority: priority,
       notes: notes.trim(),
       status: lifecycle[0]
     };
 
+    let token = localStorage.getItem("shopperpet_token");
+    
     fetch("/api/list", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
       body: JSON.stringify(body)
     })
       .then(function (res) {
@@ -95,8 +130,21 @@ function Add() {
           </div>
           <div className="form-group">
             <label htmlFor="addedBy">Added By</label>
-            <input type="text" id="addedBy" placeholder="e.g. Mom" value={addedBy} onChange={function (e) { setAddedBy(e.target.value); }} />
-          </div>
+           <select
+            id="addedBy"
+            value={addedBy}
+            onChange={function (e) { setAddedBy(e.target.value); }}
+          >
+            <option value="">Select...</option>
+            {users.map(function (u) {
+              return (
+                <option key={u._id} value={u._id}>
+                  {u.name} (@{u.username})
+                </option>
+              );
+            })}
+          </select>
+        </div>
         </div>
         <div className="form-group">
           <label htmlFor="priority">Priority</label>

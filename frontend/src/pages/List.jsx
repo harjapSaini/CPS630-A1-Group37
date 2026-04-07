@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { lifecycle, statusConfig } from "../constants";
 import { Toast, useToast } from "../components/Toast";
 
+// Socket import
+import io from "socket.io-client";
+
 // shopping list page - full CRUD view
 function List() {
   let [items, setItems] = useState([]);
@@ -12,7 +15,8 @@ function List() {
 
   // fetch all items from the api
   function loadList() {
-    fetch("/api/list")
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/list", {headers: {"Authorization": "Bearer " + token}})
       .then(function (res) {
         return res.json();
       })
@@ -28,6 +32,20 @@ function List() {
 
   useEffect(function () {
     loadList();
+
+    // Socket code in this function to refresh
+
+    let socket = io("http://localhost:8080"); // conn to backend
+
+    socket.on("list-updated", function () {
+      loadList(); // Re-fresh
+    });
+
+    // If user leaves the page, then disconnect it
+    return function () {
+      socket.disconnect();
+    };
+
   }, []);
 
   // returns the css class for a given status
@@ -38,9 +56,10 @@ function List() {
 
   // changes the status of an item to the next one in lifecycle
   function toggleStatus(id, newStatus) {
+    let token = localStorage.getItem("shopperpet_token");
     fetch("/api/list/" + id, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
       body: JSON.stringify({ status: newStatus })
     })
       .then(function () {
@@ -55,8 +74,8 @@ function List() {
   // removes an item from the list
   function deleteItem(id) {
     if (!confirm("Remove this item from the list?")) return;
-
-    fetch("/api/list/" + id, { method: "DELETE" })
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/list/" + id, { method: "DELETE", headers: {"Authorization": "Bearer " + token} })
       .then(function (res) {
         if (res.ok) {
           showToast("Item removed");
@@ -72,7 +91,8 @@ function List() {
 
   // downloads the shopping list as a text file
   function downloadList() {
-    fetch("/api/list")
+    let token = localStorage.getItem("shopperpet_token");
+    fetch("/api/list", {headers: {"Authorization": "Bearer " + token}})
       .then(function (res) {
         return res.json();
       })
@@ -137,7 +157,7 @@ function List() {
                 <div className="item-meta">{item.category} · Qty: {item.quantity} · ${item.price.toFixed(2)}{storeText}</div>
               </div>
               <span className={"badge badge-" + item.priority.toLowerCase()}>{item.priority}</span>
-              <span className={"status-tag " + statusClass} onClick={function () { toggleStatus(item.id, nextStatus); }} style={{ cursor: "pointer" }}>{item.status}</span>
+              <span className={"status-tag " + statusClass}>{item.status}</span>
               <div className="item-actions">
                 <button className="btn btn-secondary btn-sm" onClick={function () { toggleStatus(item.id, nextStatus); }}>{nextStatus}</button>
                 <button className="btn btn-danger btn-sm" onClick={function () { deleteItem(item.id); }}>Remove</button>
