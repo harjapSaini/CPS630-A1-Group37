@@ -16,7 +16,7 @@ function Item() {
   let [editQuantity, setEditQuantity] = useState("");
   let [editPrice, setEditPrice] = useState("");
   let [editStore, setEditStore] = useState("");
-  let [editAddedBy, setEditAddedBy] = useState("");
+
   let [editNotes, setEditNotes] = useState("");
 
   useEffect(function () {
@@ -69,16 +69,6 @@ function Item() {
     setEditStore(item.store || "");
     setEditNotes(item.notes || "");
     setIsEditing(true);
-
-    // the piece of code below ensure the addedby field pre-select the original user who added it.
-    let matchedId = item.addedBy;
-    for (let i = 0; i < users.length; i++) {
-      if (users[i].name === item.addedBy || users[i]._id === item.addedBy) {
-        matchedId = users[i]._id;
-        break;
-      }
-    }
-    setEditAddedBy(matchedId);
   }
 
   // save the edited fields to the server
@@ -90,7 +80,6 @@ function Item() {
       quantity: Number(editQuantity),
       price: Number(editPrice),
       store: editStore.trim(),
-      addedBy: editAddedBy.trim(),
       notes: editNotes.trim()
     };
 
@@ -177,20 +166,7 @@ function Item() {
             <input id="edit-store" type="text" value={editStore} onChange={function (e) { setEditStore(e.target.value); }} />
 
             <span className="detail-label">Added By</span>
-            <select
-              id="edit-addedBy"
-              value={editAddedBy}
-              onChange={function (e) { setEditAddedBy(e.target.value); }}
-            >
-              <option value="">Select...</option>
-              {users.map(function (u) {
-                return (
-                  <option key={u._id} value={u._id}>
-                    {u.name} (@{u.username})
-                  </option>
-                );
-              })}
-            </select>
+            <input type="text" id="edit-addedBy" value={function () { for (let i = 0; i < users.length; i++) { if (String(users[i].userId) === item.addedBy || users[i].name === item.addedBy) return users[i].name; } return item.addedBy; }()} readOnly style={{ opacity: 0.7, cursor: "not-allowed" }} />
 
             <span className="detail-label">Notes</span>
             <textarea id="edit-notes" value={editNotes} onChange={function (e) { setEditNotes(e.target.value); }}></textarea>
@@ -210,7 +186,7 @@ function Item() {
 
   let displayAddedByName = item.addedBy;
   for (let i = 0; i < users.length; i++) {
-    if (users[i]._id === item.addedBy || users[i].name === item.addedBy) {
+    if (String(users[i].userId) === item.addedBy || users[i].name === item.addedBy) {
       displayAddedByName = users[i].name;
       break;
     }

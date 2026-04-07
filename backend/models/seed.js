@@ -122,12 +122,12 @@ async function seedDatabase() {
       return;
     }
 
-    // map it over the test data and replace the name with the actual MongoDB ID
+    // map it over the test data and replace the name with the actual userId
     let mappedData = testData.map(function(item) {
       let matchedUser = users.find(function(u) { return u.name === item.addedBy; });
       
-      // replace string with the unique _id
-      item.addedBy = matchedUser ? matchedUser._id : users[0]._id;
+      // replace string with the numeric userId
+      item.addedBy = matchedUser ? String(matchedUser.userId) : String(users[0].userId);
       return item;
     });
 

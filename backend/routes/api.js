@@ -47,7 +47,7 @@ router.get("/users", verifyToken, async function (req, res) {
 // Update a specific user's profile
 router.patch("/users/:id", verifyToken, async function (req, res) {
   try {
-    let user = await User.findById(req.params.id);
+    let user = await User.findOne({ userId: parseInt(req.params.id) });
     
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -93,7 +93,12 @@ router.post("/auth/register", async function (req, res) {
     // Hash the new password
     let passwordHashed = await bcrypt.hash(b.password, 10);
 
+    // figure out the next available userId
+    let lastUser = await User.findOne().sort({ userId: -1 });
+    let nextUserId = lastUser ? lastUser.userId + 1 : 1;
+
     let newUser = new User({
+      userId: nextUserId,
       name: b.name.trim(),
       username: b.username.trim().toLowerCase(),
       password: passwordHashed
@@ -134,14 +139,14 @@ router.post("/auth/login", async function (req, res) {
 
     // 3. Generate the real JWT token
     let token = jwt.sign(
-      { userId: user._id, username: user.username },
+      { userId: user.userId, username: user.username },
       JWT_SECRET,
       { expiresIn: "24h" } // Token will expire after 24h...
     );
 
     res.status(200).json({
       message: "Login successful",
-      id: user._id,
+      id: user.userId,
       name: user.name,
       username: user.username,
       token: token

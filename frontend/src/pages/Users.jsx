@@ -61,7 +61,7 @@ function Users() {
 
         {users.map(function (user) {
           return (
-            <div className="grocery-item" key={user._id}>
+            <div className="grocery-item" key={user.userId}>
               
               <img 
                 src={defaultAvatar} 

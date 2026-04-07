@@ -3,21 +3,25 @@ const bcrypt = require("bcrypt");
 
 const userData = [
   { 
+    userId: 1,
     name: "Mom",
     username: "mom",
     password: "password123" 
   },
   { 
+    userId: 2,
     name: "Dad", 
     username: "dad",
     password: "password123"
   },
   { 
+    userId: 3,
     name: "Brother", 
     username: "bro",
     password: "password123"
   },
   { 
+    userId: 4,
     name: "Sister", 
     username: "sis",
     password: "password123"

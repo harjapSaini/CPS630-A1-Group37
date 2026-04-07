@@ -167,7 +167,7 @@ function Analytics() {
 
         for (let j = 0; j < users.length; j++) {
           // Check against both ID and Name just in case there is old Assignment 2 data
-          if (users[j]._id === addedById || users[j].name === addedById) {
+          if (String(users[j].userId) === addedById || users[j].name === addedById) {
             name = users[j].name;
             break;
           }

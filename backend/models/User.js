@@ -1,6 +1,12 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
+  userId: {
+    type: Number,
+    required: [true, "User ID is required"],
+    unique: true,
+    min: [1, "User ID must be at least 1"]
+  },
   name: {
     type: String,
     required: true,
