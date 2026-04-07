@@ -56,6 +56,20 @@ body {
   font-weight: bold;
 }
 
+/* notification badge for active trips */
+.nav-badge {
+  position: absolute;
+  top: -8px;
+  right: -14px;
+  background: crimson;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 5px;
+  border-radius: 999px;
+  line-height: normal;
+}
+
 /* main content wrapper - centers everything and caps the width */
 .container { 
   max-width: 720px; 
