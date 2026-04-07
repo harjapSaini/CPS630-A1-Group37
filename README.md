@@ -8,10 +8,10 @@ ShopperPet is basically a grocery list manager. You can add grocery items, track
 
 Here's what you can do with it:
 
-- **Add Items** - theres a form where you fill in category, priority, price, notes, etc.
+- **Add Items** - theres a form where you fill in category, priority, price, notes, etc. The "Added By" field is automatically set to the logged-in user
 - **Shopping List** - see all your items, change their status (Needed -> In Cart -> Purchased -> Consumed), or delete them
 - **Item Details** - click on any item to see all its info
-- **Edit Items** - you can also edit item details from the detail page
+- **Edit Items** - you can also edit item details from the detail page ("Added By" is read-only and cannot be reassigned)
 - **Analytics** - a dashboard that shows spending breakdowns, category charts, and a budget tracker. Right now it only looks at items that are "In Cart". The idea is you'd use it while shopping to estimate how much you'll spend before going to the cashier. Theres also a spender leaderboard so family members could split the bill
 - **Download List** - lets you export your list as a `.txt` file. **[x]** means its in cart, **[]** means its still needed
 - **User Authentication** - Secure login and registration. Unauthenticated users cannot view or edit the household grocery list.
@@ -108,12 +108,12 @@ This starts the Vite dev server at **http://localhost:5173**. The Vite proxy for
 
 
 ### Test Accounts
-You can log in immediately using the seeded accounts (username / password):
+You can log in immediately using the seeded accounts (username / password / userId):
 
-* #### `dad / password123`
-* #### `mom / password123`
-* #### `bro / password123`
-* #### `sis / password123`
+* #### `mom / password123 / userId: 1`
+* #### `dad / password123 / userId: 2`
+* #### `bro / password123 / userId: 3`
+* #### `sis / password123 / userId: 4`
 
 *(Note: Make sure to delete old database and browser cache before running A3 changes!!!)*
 
@@ -175,7 +175,7 @@ Each grocery item is stored in MongoDB with the following fields and validation:
 | `quantity`  | Number | Required, whole number, min 1                   |
 | `price`     | Number | Min 0, max 99999                                |
 | `store`     | String | Trimmed, max 100 chars                          |
-| `addedBy`   | String | Trimmed, max 50 chars, defaults to "Anonymous"  |
+| `addedBy`   | String | Stores the `userId` of the user who added the item. Trimmed, max 50 chars, defaults to "Anonymous"  |
 | `priority`  | String | Must be Low / Medium / High                     |
 | `status`    | String | Must be Needed / In Cart / Purchased / Consumed |
 | `notes`     | String | Trimmed, max 500 chars                          |
@@ -187,6 +187,7 @@ Household members are stored with the following fields and validation:
 
 | Field       | Type   | Validation                                      |
 | ----------- | ------ | ----------------------------------------------- |
+| `userId`    | Number | Required, unique, auto-incremented, min 1       |
 | `name`      | String | Required, trimmed                               |
 | `username`  | String | Required, unique, lowercase                     |
 | `password`  | String | Required (Stored as a bcrypt hash)              |
@@ -194,7 +195,7 @@ Household members are stored with the following fields and validation:
 
 ### Seed Function
 
-On startup, the backend checks if the `users` and `groceryitems` collections are empty. If they are, it automatically hashes the passwords for the test users, inserts them, and then links the test grocery items to those new user IDs. If the database already has data, it skips seeding. This is handled by `models/userseed.js` and `models/seed.js`.
+On startup, the backend checks if the `users` and `groceryitems` collections are empty. If they are, it automatically hashes the passwords for the test users, assigns them sequential `userId` values (1-4), inserts them, and then links the test grocery items to those `userId` values via the `addedBy` field. If the database already has data, it skips seeding. This is handled by `models/userseed.js` and `models/seed.js`.
 
 ---
 
