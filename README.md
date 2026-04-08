@@ -19,20 +19,19 @@ Here's what you can do with it:
 - **Real-Time Syncing** - Powered by Socket.io, if a family member adds/checks off an item or assigns you to a grocery trip, it instantly updates on your screen (and adds a notification badge to your Nav Bar) without refreshing the page.
 - **User Profiles & Directory** - Family members can edit their display names and change passwords, and view a directory of everyone currently in the household.
 
-
 ---
 
 ## Tech Stack
 
-| Layer    | Technology                      |
-| -------- | ------------------------------- |
-| Backend  | Node.js + Express               |
-| Database | MongoDB + Mongoose              |
-| Frontend | React + Vite + React Router     |
-| Charts   | Chart.js + react-chartjs-2      |
-| Styling  | Vanilla CSS (no CSS frameworks) |
-| Security  | JSON Web Tokens (JWT) + bcrypt |
-| Real-Time  | Socket IO |
+| Layer     | Technology                      |
+| --------- | ------------------------------- |
+| Backend   | Node.js + Express               |
+| Database  | MongoDB + Mongoose              |
+| Frontend  | React + Vite + React Router     |
+| Charts    | Chart.js + react-chartjs-2      |
+| Styling   | Vanilla CSS (no CSS frameworks) |
+| Security  | JSON Web Tokens (JWT) + bcrypt  |
+| Real-Time | Socket IO                       |
 
 ---
 
@@ -111,45 +110,44 @@ npm run dev
 
 This starts the Vite dev server at **http://localhost:5173**. The Vite proxy forwards all `/api` requests to the backend on port 8080.
 
-
 ### Test Accounts
+
 You can log in immediately using the seeded accounts (username / password / userId):
 
-* #### `mom / password123 / userId: 1`
-* #### `dad / password123 / userId: 2`
-* #### `bro / password123 / userId: 3`
-* #### `sis / password123 / userId: 4`
+- #### `mom / password123 / userId: 1`
+- #### `dad / password123 / userId: 2`
+- #### `bro / password123 / userId: 3`
+- #### `sis / password123 / userId: 4`
 
-*(Note: Make sure to delete old database and browser cache before running A3 changes!!!)*
+_(Note: Make sure to delete old database and browser cache before running A3 changes!!!)_
 
 ### Pages
 
-| Route        | Page          | What it does                           |
-| ------------ | ------------- | ----------------------------------     |
-| `/`          | Home          | Landing page, shows 3 recent items (Protected)    |
-| `/login`          | Login          | Authenticates user & provides JWT (Public)     |
-| `/register`          | Register          | Creates a new user account (Public)     |
-| `/list`      | Shopping List | All items, change status, delete (Protected)       |
-| `/add`       | Add Item      | Form to add a new grocery item (Protected)        |
-| `/item/:id`  | Item Details  | View/edit/delete a single item (Protected)        |
-| `/trips`     | Trips         | View all planned, active, and completed trips (Protected)|
-| `/trips/new` | Plan Trip     | Form to set up metadata and assign users/items to a trip (Protected)|
-| `/trips/:id` | Trip Detail   | The active checklist, budget gauge, and completion flow (Protected)|
-| `/analytics` | Analytics     | Charts and budget tracking  (Protected)           |
-| `/users` | Users     | Directory of all users  (Protected)           |
-| `/profile` | Profile     | Update display name and password (Protected)           |
-
+| Route        | Page          | What it does                                                         |
+| ------------ | ------------- | -------------------------------------------------------------------- |
+| `/`          | Home          | Landing page, shows 3 recent items (Protected)                       |
+| `/login`     | Login         | Authenticates user & provides JWT (Public)                           |
+| `/register`  | Register      | Creates a new user account (Public)                                  |
+| `/list`      | Shopping List | All items, change status, delete (Protected)                         |
+| `/add`       | Add Item      | Form to add a new grocery item (Protected)                           |
+| `/item/:id`  | Item Details  | View/edit/delete a single item (Protected)                           |
+| `/trips`     | Trips         | View all planned, active, and completed trips (Protected)            |
+| `/trips/new` | Plan Trip     | Form to set up metadata and assign users/items to a trip (Protected) |
+| `/trips/:id` | Trip Detail   | The active checklist, budget gauge, and completion flow (Protected)  |
+| `/analytics` | Analytics     | Charts and budget tracking (Protected)                               |
+| `/users`     | Users         | Directory of all users (Protected)                                   |
+| `/profile`   | Profile       | Update display name and password (Protected)                         |
 
 ### REST API
 
-*(Note: All endpoints below except `/auth` are protected and require a valid JWT Bearer token in the `Authorization` header. Missing or invalid tokens will return a `401` or `403` error).*
+_(Note: All endpoints below except `/auth` are protected and require a valid JWT Bearer token in the `Authorization` header. Missing or invalid tokens will return a `401` or `403` error)._
 
 #### Authentication
 
-| Method   | Endpoint             | What it does                  | Status Codes |
-| -------- | -------------------- | ----------------------------- | ------------ |
-| `POST`   | `/api/auth/login`    | Verifies bcrypt & returns JWT | 200 / 401    |
-| `POST`   | `/api/auth/register` | Creates account & hashes pass | 201 / 400    |
+| Method | Endpoint             | What it does                  | Status Codes |
+| ------ | -------------------- | ----------------------------- | ------------ |
+| `POST` | `/api/auth/login`    | Verifies bcrypt & returns JWT | 200 / 401    |
+| `POST` | `/api/auth/register` | Creates account & hashes pass | 201 / 400    |
 
 #### Grocery Items
 
@@ -163,27 +161,27 @@ You can log in immediately using the seeded accounts (username / password / user
 
 #### Users
 
-| Method   | Endpoint         | What it does                  | Socket Event    | Status Codes    |
-| -------- | ---------------- | ----------------------------- | --------------- | --------------- |
-| `GET`    | `/api/users`     | Returns all users             | -               | 200 / 401       |
-| `PATCH`  | `/api/users/:id` | Updates profile/password      | `users-updated` | 200 / 401 / 404 |
+| Method  | Endpoint         | What it does             | Socket Event    | Status Codes    |
+| ------- | ---------------- | ------------------------ | --------------- | --------------- |
+| `GET`   | `/api/users`     | Returns all users        | -               | 200 / 401       |
+| `PATCH` | `/api/users/:id` | Updates profile/password | `users-updated` | 200 / 401 / 404 |
 
 #### Trips
 
-| Method   | Endpoint             | What it does                  | Socket Event   | Status Codes    |
-| -------- | -------------------- | ----------------------------- | -------------- | --------------- |
-| `GET`    | `/api/trips`         | Returns all shopping trips    | -              | 200 / 401       |
-| `GET`    | `/api/trips/:id`     | Returns one trip by its ID    | -              | 200 / 401 / 404 |
-| `POST`   | `/api/trips`         | Plan a new trip               | `trips-updated`| 201 / 400 / 401 |
-| `PATCH`  | `/api/trips/:id`     | Updates a trip (like status)  | `trips-updated`| 200 / 401 / 404 |
-| `DELETE` | `/api/trips/:id`     | Deletes a trip                | `trips-updated`| 200 / 401 / 404 |
-
+| Method   | Endpoint         | What it does                 | Socket Event    | Status Codes    |
+| -------- | ---------------- | ---------------------------- | --------------- | --------------- |
+| `GET`    | `/api/trips`     | Returns all shopping trips   | -               | 200 / 401       |
+| `GET`    | `/api/trips/:id` | Returns one trip by its ID   | -               | 200 / 401 / 404 |
+| `POST`   | `/api/trips`     | Plan a new trip              | `trips-updated` | 201 / 400 / 401 |
+| `PATCH`  | `/api/trips/:id` | Updates a trip (like status) | `trips-updated` | 200 / 401 / 404 |
+| `DELETE` | `/api/trips/:id` | Deletes a trip               | `trips-updated` | 200 / 401 / 404 |
 
 ### Real-Time Communication
 
 ShopperPet uses **Socket.io** to provide seamless real-time syncing across all connected clients. When actions are taken that affect global data, the backend emits broadcast events via a WebSocket connection instead of relying on standard HTTP requests to manually refresh data.
 
 **How it works (The Notification Badge Feature):**
+
 1. **The Web Socket:** When a user opens the app, the React `Navbar.jsx` component connects to the Express backend via `io("http://localhost:8080")`.
 2. **The Broadcast:** If User B creates a new Grocery Trip and assigns User A to it, the backend saves the trip to MongoDB and fires an `req.app.get("io").emit("trips-updated")` socket event globally.
 3. **The Listener:** User A's browser instantly receives the `trips-updated` event through the open websocket.
@@ -199,48 +197,48 @@ This exact push-pattern is also utilized to keep the main grocery list and activ
 
 Each grocery item is stored in MongoDB with the following fields and validation:
 
-| Field       | Type   | Validation                                      |
-| ----------- | ------ | ----------------------------------------------- |
-| `id`        | Number | Required, unique, min 1                         |
-| `item`      | String | Required, trimmed, 1-100 chars                  |
-| `category`  | String | Required, must be one of 9 allowed categories   |
-| `quantity`  | Number | Required, whole number, min 1                   |
-| `price`     | Number | Min 0, max 99999                                |
-| `store`     | String | Trimmed, max 100 chars                          |
-| `addedBy`   | String | Stores the `userId` of the user who added the item. Trimmed, max 50 chars, defaults to "Anonymous"  |
-| `priority`  | String | Must be Low / Medium / High                     |
-| `status`    | String | Must be Needed / In Cart / Purchased / Consumed |
-| `notes`     | String | Trimmed, max 500 chars                          |
-| `dateAdded` | String | Must match YYYY-MM-DD format                    |
+| Field       | Type   | Validation                                                                                         |
+| ----------- | ------ | -------------------------------------------------------------------------------------------------- |
+| `id`        | Number | Required, unique, min 1                                                                            |
+| `item`      | String | Required, trimmed, 1-100 chars                                                                     |
+| `category`  | String | Required, must be one of 9 allowed categories                                                      |
+| `quantity`  | Number | Required, whole number, min 1                                                                      |
+| `price`     | Number | Min 0, max 99999                                                                                   |
+| `store`     | String | Trimmed, max 100 chars                                                                             |
+| `addedBy`   | String | Stores the `userId` of the user who added the item. Trimmed, max 50 chars, defaults to "Anonymous" |
+| `priority`  | String | Must be Low / Medium / High                                                                        |
+| `status`    | String | Must be Needed / In Cart / Purchased / Consumed                                                    |
+| `notes`     | String | Trimmed, max 500 chars                                                                             |
+| `dateAdded` | String | Must match YYYY-MM-DD format                                                                       |
 
 #### User
 
 Household members are stored with the following fields and validation:
 
-| Field       | Type   | Validation                                      |
-| ----------- | ------ | ----------------------------------------------- |
-| `userId`    | Number | Required, unique, auto-incremented, min 1       |
-| `name`      | String | Required, trimmed                               |
-| `username`  | String | Required, unique, lowercase                     |
-| `password`  | String | Required (Stored as a bcrypt hash)              |
-| `createdAt` | Date   | Auto-set to current date/time                   |
+| Field       | Type   | Validation                                |
+| ----------- | ------ | ----------------------------------------- |
+| `userId`    | Number | Required, unique, auto-incremented, min 1 |
+| `name`      | String | Required, trimmed                         |
+| `username`  | String | Required, unique, lowercase               |
+| `password`  | String | Required (Stored as a bcrypt hash)        |
+| `createdAt` | Date   | Auto-set to current date/time             |
 
 #### Trip
 
 Grocery trips organize items, budget, and members:
 
-| Field       | Type           | Validation                                      |
-| ----------- | -------------- | ----------------------------------------------- |
-| `tripId`    | Number         | Required, unique, auto-incremented, min 1       |
-| `name`      | String         | Required, trimmed, max 100 chars                |
-| `store`     | String         | Trimmed, max 100 chars                          |
-| `plannedDate`| String        | Matches YYYY-MM-DD format                       |
-| `createdBy` | String         | User ID of creator (default: "Anonymous")       |
-| `assignedTo`| Array of String| User IDs assigned to join the trip              |
-| `itemIds`   | Array of Number| Grocery Item IDs grouped into this trip         |
-| `budget`    | Number         | Min 0, max 99999                                |
-| `status`    | String         | Must be Planning / Active / Completed           |
-| `createdAt` | Date           | Auto-set to current date/time                   |
+| Field         | Type            | Validation                                |
+| ------------- | --------------- | ----------------------------------------- |
+| `tripId`      | Number          | Required, unique, auto-incremented, min 1 |
+| `name`        | String          | Required, trimmed, max 100 chars          |
+| `store`       | String          | Trimmed, max 100 chars                    |
+| `plannedDate` | String          | Matches YYYY-MM-DD format                 |
+| `createdBy`   | String          | User ID of creator (default: "Anonymous") |
+| `assignedTo`  | Array of String | User IDs assigned to join the trip        |
+| `itemIds`     | Array of Number | Grocery Item IDs grouped into this trip   |
+| `budget`      | Number          | Min 0, max 99999                          |
+| `status`      | String          | Must be Planning / Active / Completed     |
+| `createdAt`   | Date            | Auto-set to current date/time             |
 
 ### Seed Function
 
@@ -250,10 +248,9 @@ On startup, the backend checks if the `users` and `groceryitems` collections are
 
 ## Reflection for A3
 
-
 ### What we built
 
-For Assignment 3, we evolved our MERN prototype into a fully secure, real-time application. We introduced JSON Web Tokens for authentication, bcrypt for password encryption, and Socket.io for live data synchronization across multiple clients. The project is split into a `backend/` and `frontend/` monorepo layout.
+For Assignment 3, we evolved our MERN prototype into a fully secure, real-time application. We introduced JSON Web Tokens for authentication, bcrypt for password encryption, and Socket.io for live data synchronization across multiple clients, most recently culminating in a real-time notification badge that alerts users whenever they are assigned to a new grocery trip. The project is split into a `backend/` and `frontend/` monorepo layout.
 
 ### Challenges we ran into
 
@@ -262,10 +259,11 @@ For Assignment 3, we evolved our MERN prototype into a fully secure, real-time a
 - **Breaking our own Database:** When we finally got `bcrypt` working, we realized we locked ourselves out of all our old test accounts because the database was looking for a hash, but our old passwords were saved in plain text format. We had to write a loop in our seed file to hash the default passwords.
 - **The Navbar Glitch:** Getting the Navbar to update the username instantly when you edit your profile was annoying. First we did it using socket.io. But, it kept reading the old name from local storage before the database actually updated it because of a race condition. We ended up using custom browser events to force them to sync up. We learned in that case, we don't need socket io.
 - **The Back Button Glitch:** We realized that even after you log out, you could just hit the browser's "Back" button and still see the protected grocery list in the `api/list`. We had to figure out how to add strict `Cache-Control` headers on the backend to force the browser to forget the data once you log out.
+- **The Real-Time Badge Sync:** When building the real-time notification badge, we had to carefully design when and how to filter the trip data. We realized that broadcasting user-specific data to everyone could be chaotic, so keeping the general `trips-updated` socket event and letting the frontend filter assigned trips proved to be the most robust approach.
 
 ### What went well
 
-- Adding Socket.io was honestly easier than we expected. Since our React frontend and Express backend were already separated, it was just a matter of making them broadcast to each other on the same port.
+- Adding Socket.io was honestly easier than we expected. Since our React frontend and Express backend were already separated, it was just a matter of making them broadcast to each other on the same port. This made building the real-time notification badge incredibly intuitive, since we only needed to listen for existing broadcast events in our Navbar.
 - The UI naturally checked off Nielsen's usability rules. Things like the Toast notifications popping up to tell you what's happening, and the `<select>` dropdowns preventing people from making typos.
 - The `Login Wall` worked perfectly. We figured out how to conditionally hide the Navbar completely on the Login and Register screens so unauthenticated users literally have nowhere else to click.
 
@@ -274,6 +272,7 @@ For Assignment 3, we evolved our MERN prototype into a fully secure, real-time a
 - **Security basics:** We learned why saving passwords as plain text in the database is a terrible idea, and how bcrypt actually works to scramble them with salts.
 - **Middleware:** We learned how Express middleware actually works. It acts like a security guard that checks for a JWT Bearer token before letting any fetch requests touch the database.
 - **Real-Time web:** We understood how WebSockets actually work to keep a two-way connection open, instead of just doing standard HTTP fetch requests.
+- **Micro-interactions:** We learned how small UI elements (like a dynamic notification badge on the Nav bar) can drastically improve the app's overall UX by providing passive, real-time awareness without disrupting what the user is currently doing.
 
 ### Version Control
 
