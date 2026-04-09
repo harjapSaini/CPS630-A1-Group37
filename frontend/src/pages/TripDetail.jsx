@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import io from "socket.io-client";
+import io from "socket.io-client"; // Used for live socket updates
 import { Toast, useToast } from "../components/Toast";
 import { statusConfig } from "../constants";
 
 function TripDetail() {
+   // Get trip id from URL
   let { id } = useParams();
   let navigate = useNavigate();
   let [toastProps, showToast] = useToast();
@@ -16,6 +17,7 @@ function TripDetail() {
   let [loading, setLoading] = useState(true);
   let [error, setError] = useState(false);
 
+   // Load trip, item, and user data
   function loadData() {
     let token = localStorage.getItem("shopperpet_token");
     
@@ -58,6 +60,7 @@ function TripDetail() {
     };
   }, [id]);
 
+  // Update trip status
   function updateTripStatus(newStatus) {
     let token = localStorage.getItem("shopperpet_token");
     fetch("/api/trips/" + id, {
@@ -72,6 +75,7 @@ function TripDetail() {
     });
   }
 
+   // Delete trip
   function deleteTrip() {
     if (!window.confirm("Are you sure you want to delete this trip?")) return;
     
@@ -87,7 +91,7 @@ function TripDetail() {
       }
     });
   }
-
+  // Toggle item between Needed and In Cart
   function toggleItemInCart(itemId, currentlyInCart) {
     let newStatus = currentlyInCart ? "Needed" : "In Cart";
     let token = localStorage.getItem("shopperpet_token");
@@ -114,6 +118,7 @@ function TripDetail() {
   }
 
   if (loading) return <main className="container"><div className="empty-state"><p>Loading trip...</p></div></main>;
+  // Error screen
   if (error || !trip) return <main className="container"><div className="empty-state"><p>Trip not found or error loading.</p></div></main>;
 
   // Resolve assigned members mapped from users list
@@ -294,6 +299,7 @@ function TripDetail() {
           <button className="btn btn-primary" onClick={handleUseAsTemplate}>Create a New Trip</button>
         </div>
         
+        {/* Toast popup message */}
         <Toast message={toastProps.message} visible={toastProps.visible} />
       </main>
     );

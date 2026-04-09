@@ -27,6 +27,7 @@ function NewTrip() {
     let token = localStorage.getItem("shopperpet_token");
     let currentUserId = localStorage.getItem("shopperpet_id");
     
+    // Load both users and grocery items at the same time
     Promise.all([
       fetch("/api/users", { headers: { "Authorization": "Bearer " + token } }).then(res => res.json()),
       fetch("/api/list", { headers: { "Authorization": "Bearer " + token } }).then(res => res.json())
@@ -87,6 +88,7 @@ function NewTrip() {
       createdBy: localStorage.getItem("shopperpet_id")
     };
 
+    // Send trip to backend
     fetch("/api/trips", {
       method: "POST",
       headers: {
@@ -101,6 +103,7 @@ function NewTrip() {
     })
     .then(function (data) {
       showToast("Trip created!");
+      // Go to trip details page after 1 second
       setTimeout(function () {
         navigate("/trips/" + data.tripId);
       }, 1000);

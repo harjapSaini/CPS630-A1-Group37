@@ -5,6 +5,7 @@ import io from "socket.io-client";
 function Navbar() {
   const navigate = useNavigate();
 
+   // Stores the logged in user's name from localStorage
   let [currentUserName, setCurrentUserName] = useState(localStorage.getItem("shopperpet_user") || "User");
   let [tripCount, setTripCount] = useState(0);
 
@@ -14,6 +15,7 @@ function Navbar() {
     
     if (!token || !currentUserId) return;
 
+     // Fetch all trips from backend
     fetch("/api/trips", { headers: { "Authorization": "Bearer " + token } })
       .then(res => {
         if (!res.ok) throw new Error();
@@ -58,6 +60,7 @@ function Navbar() {
     };
   }, []);
 
+  // Logout button function
   const handleLogout = () => {
 
     localStorage.removeItem("shopperpet_token");
