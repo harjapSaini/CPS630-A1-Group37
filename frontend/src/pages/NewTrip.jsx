@@ -116,7 +116,7 @@ function NewTrip() {
   return (
     <main className="container">
       <div style={{ display: "flex", alignItems: "center", marginBottom: "1.5rem" }}>
-        <h1 style={{ paddingTop: 0, paddingBottom: 0 }}>🗺️ Plan New Trip</h1>
+        <h1>Plan New Trip</h1>
       </div>
 
       <form className="card" onSubmit={handleSubmit}>
